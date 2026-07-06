@@ -14,10 +14,12 @@ _bedrock_runtime = None
 
 
 def _get_client(region: str):
-    """Lazy-initialize the Bedrock Runtime client."""
+    """Lazy-initialize the Bedrock Runtime client with extended timeout."""
     global _bedrock_runtime
     if _bedrock_runtime is None:
-        _bedrock_runtime = boto3.client("bedrock-runtime", region_name=region)
+        from botocore.config import Config
+        config = Config(read_timeout=300, connect_timeout=10, retries={"max_attempts": 2})
+        _bedrock_runtime = boto3.client("bedrock-runtime", region_name=region, config=config)
     return _bedrock_runtime
 
 

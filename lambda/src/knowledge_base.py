@@ -33,6 +33,9 @@ def retrieve_module_definitions(
 
     Uses RetrieveAndGenerate to get a synthesized response with module
     sources, parameters, and best practices.
+
+    Note: Uses Claude 3 Sonnet (direct foundation model) for KB queries
+    as it's faster and sufficient for retrieval synthesis.
     """
     client = _get_client(region)
 
@@ -42,9 +45,8 @@ def retrieve_module_definitions(
         f"{', '.join(services)}"
     )
 
-    # Build the model ARN from the model ID
-    # For RetrieveAndGenerate, we need the full ARN
-    model_arn = f"arn:aws:bedrock:{region}::foundation-model/{model_id}"
+    # Use Claude 3 Sonnet directly for KB queries — faster than cross-region inference profiles
+    kb_model_arn = f"arn:aws:bedrock:{region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"
 
     try:
         response = client.retrieve_and_generate(
@@ -53,7 +55,7 @@ def retrieve_module_definitions(
                 "type": "KNOWLEDGE_BASE",
                 "knowledgeBaseConfiguration": {
                     "knowledgeBaseId": knowledge_base_id,
-                    "modelArn": model_arn,
+                    "modelArn": kb_model_arn,
                 },
             },
         )
