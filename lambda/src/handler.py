@@ -22,7 +22,7 @@ GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 GITHUB_REPO_OWNER = os.environ["GITHUB_REPO_OWNER"]
 GITHUB_REPO_NAME = os.environ["GITHUB_REPO_NAME"]
 KNOWLEDGE_BASE_ID = os.environ["KNOWLEDGE_BASE_ID"]
-BEDROCK_MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-sonnet-4-20250514-v1:0")
+BEDROCK_MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "us.anthropic.claude-sonnet-4-5-20250929-v1:0")
 AWS_REGION = os.environ.get("AWS_REGION", "ca-central-1")
 
 
