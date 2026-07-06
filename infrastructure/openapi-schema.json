@@ -1,0 +1,78 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LZA Terraform Generator",
+    "version": "1.0.0",
+    "description": "Generates compliant Terraform configurations for AWS Landing Zone account customizations"
+  },
+  "paths": {
+    "/generate": {
+      "post": {
+        "operationId": "generateTerraform",
+        "summary": "Generate Terraform IaC for a new AWS account",
+        "description": "Generates a main.tf and README.md for the specified AWS services, following organization best practices, and commits them to the AFT account customizations repository.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["AccountEmail", "AccountName", "CustomizationName", "AwsServices"],
+                "properties": {
+                  "AccountEmail": {
+                    "type": "string",
+                    "description": "Email address for the AWS account"
+                  },
+                  "AccountName": {
+                    "type": "string",
+                    "description": "Name identifier for the account (used in file paths)"
+                  },
+                  "CustomizationName": {
+                    "type": "string",
+                    "description": "Template name for the customization (e.g., web-app, data-lake)"
+                  },
+                  "AwsServices": {
+                    "type": "string",
+                    "description": "Comma-separated list of AWS services to configure (e.g., 'ec2, s3, rds, lambda')"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Terraform configuration generated and committed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Success message"
+                    },
+                    "main_tf_url": {
+                      "type": "string",
+                      "description": "GitHub URL to the generated main.tf"
+                    },
+                    "readme_url": {
+                      "type": "string",
+                      "description": "GitHub URL to the generated README.md"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters"
+          },
+          "500": {
+            "description": "Internal error during generation"
+          }
+        }
+      }
+    }
+  }
+}

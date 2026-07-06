@@ -1,29 +1,140 @@
-### README for Account Customization Lambda Function and Knowledge Base
+# Generate Customized Compliant IaC Scripts for AWS Landing Zone using Amazon Bedrock
 
-#### Custom code generation Lambda Function
-- **Description**: Generates and commits Terraform configurations for custom AWS services to a GitHub repository.
-- **Environment Variables**:
-  - `GITHUB_TOKEN`: Token for GitHub API authentication.
-- **Dependencies**: Python 3.x, `boto3`, `requests`, `logging`, `base64` libraries.
-- **Logical Flow**:
-  1. Receives an event with detailed descripton of AWS application architecture.
-  2. Identifies AWS service from description
-  3. Retrieves Terraform module definitions for AWS services from the KB.
-  4. Invokes the Bedrock model twice: first, to generate Terraform configurations following organizational coding guidelines and including Terraform module details from the Knowledge Base; second, to create a detailed README
-  5. Applies Retrieval Augmented Generation (RAG) to enrich the input prompt with Terraform module information, ensuring the output code meets organizational best practices.
-  6. Commits the generated Terraform configuration and the README to the GitHub repository, providing traceability and transparency.
-  7. Responds with success, including URLs to the committed GitHub files, or returns detailed error information for troubleshooting.
+An automated Terraform code generator that uses **Amazon Bedrock** (Claude Sonnet 4) with **Retrieval Augmented Generation (RAG)** to produce compliant, organization-specific infrastructure-as-code for AWS Landing Zone account customizations.
 
+## Architecture
 
+```
+┌─────────────┐     ┌──────────────────┐     ┌─────────────────────┐
+│   Bedrock   │────▶│  Lambda Function │────▶│  Bedrock Knowledge  │
+│    Agent    │     │                  │     │  Base (RAG)         │
+└─────────────┘     │  1. Query KB     │     │  - TF modules       │
+                    │  2. Generate TF  │     │  - Best practices   │
+                    │  3. Generate Doc │     │  - Security configs │
+                    │  4. Commit       │     └─────────────────────┘
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │  GitHub Repo     │
+                    │  (AFT customs)   │
+                    │  - main.tf       │
+                    │  - README.md     │
+                    └──────────────────┘
+```
 
-#### Knowledge Base (KB)
-- **Description**: A structured repository containing AWS service and Terraform module information.
-- **Structure**: JSON format categorizing services and modules.
-- **Configure Knowledge Base**: Configuring a Knowledge Base (KB) enables your Bedrock agents to access a repository of information for AWS account provisioning. Follow these steps to set up your KB:
-  1. Access the Amazon Bedrock Console: Log in and go directly to the 'Knowledge Base' section. This is your starting point for creating a new KB.
-  2. Name Your Knowledge Base: Choose a clear and descriptive name that reflects the purpose of your KB, such as "AWS Account Setup KB."
-  3. Select an IAM Role: Assign a pre-configured IAM role with the necessary permissions. 
-  4. Define the Data Source: Upload a JSON file to an S3 bucket with encryption enabled for security. This file should contain a structured list of Terraform modules. For the JSON structure, use the example provided in this repository
-  5. Choose the Default Embeddings Model: For most use cases, the Amazon Bedrock Titan G1 Embeddings - Text model will suffice. It's pre-configured and ready to use, simplifying the process.
-  6. Opt for the Managed Vector Store: Allow Amazon Bedrock to create and manage the vector store for you in Amazon OpenSearch Service.
-  7. Review and Finalize: Double-check all entered information for accuracy. Pay special attention to the S3 bucket URI and IAM role details.
+## How It Works
+
+1. A user describes the AWS services they need via the Bedrock Agent
+2. The Lambda queries a **Knowledge Base** containing organization-approved Terraform modules
+3. Using RAG, Claude generates Terraform code that follows org best practices and uses approved modules
+4. A README with cost estimation and Well-Architected review is generated
+5. Both files are committed to the AFT account customizations GitHub repository
+
+## Project Structure
+
+```
+.
+├── lambda/
+│   ├── src/
+│   │   ├── handler.py          # Lambda entry point
+│   │   ├── bedrock_client.py   # Claude invocation (Messages API)
+│   │   ├── knowledge_base.py   # KB retrieval (RetrieveAndGenerate)
+│   │   └── github_client.py    # GitHub Contents API client
+│   ├── tests/
+│   │   └── test_handler.py     # Unit tests
+│   └── requirements.txt
+├── knowledge-base/
+│   ├── terraform-modules-kb.json   # KB data source (upload to S3)
+│   └── README.md
+├── infrastructure/
+│   └── template.yaml              # SAM/CloudFormation for deployment
+├── .env.example                   # Environment variables template
+└── README.md
+```
+
+## Prerequisites
+
+- AWS account with **Amazon Bedrock** access (Claude Sonnet 4 model enabled)
+- **Python 3.11+**
+- AWS CLI configured with appropriate credentials
+- GitHub Personal Access Token with `repo` scope
+
+## Setup
+
+### 1. Knowledge Base
+
+```bash
+# Upload the module definitions to S3
+aws s3 cp knowledge-base/terraform-modules-kb.json s3://your-bucket/kb/
+
+# Create the Knowledge Base in Bedrock console:
+# - Data source: S3 bucket above
+# - Embeddings: Amazon Titan G1 Embeddings
+# - Vector store: Managed (OpenSearch Serverless)
+```
+
+### 2. Lambda Deployment
+
+```bash
+# Configure environment
+cp .env.example .env
+# Edit .env with your values
+
+# Package and deploy (using SAM)
+cd infrastructure
+sam build
+sam deploy --guided
+```
+
+### 3. Bedrock Agent
+
+Create a Bedrock Agent with an Action Group that accepts:
+- `AccountEmail` — email for the new account
+- `AccountName` — name identifier
+- `CustomizationName` — template name for the customization
+- `AwsServices` — comma-separated list of services (e.g., "ec2, s3, rds")
+
+Point the Action Group's Lambda to the deployed function.
+
+## Configuration
+
+| Variable            | Description                              | Example                                 |
+|---------------------|------------------------------------------|-----------------------------------------|
+| `GITHUB_TOKEN`      | GitHub PAT with repo scope               | `ghp_xxxx`                              |
+| `GITHUB_REPO_OWNER` | GitHub org/user                          | `my-org`                                |
+| `GITHUB_REPO_NAME`  | Target repository                        | `aft-account-customizations`            |
+| `KNOWLEDGE_BASE_ID` | Bedrock KB identifier                    | `ABCDEF1234`                            |
+| `BEDROCK_MODEL_ID`  | Model for generation                     | `anthropic.claude-sonnet-4-20250514-v1:0`       |
+| `AWS_REGION`        | AWS region                               | `ca-central-1`                          |
+
+## Testing
+
+```bash
+cd lambda
+pip install pytest
+python -m pytest tests/ -v
+```
+
+## Lambda IAM Permissions Required
+
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "bedrock:InvokeModel",
+    "bedrock:RetrieveAndGenerate"
+  ],
+  "Resource": "*"
+}
+```
+
+## Supported Services
+
+The Knowledge Base includes module definitions for: EC2, RDS, S3, VPC, IAM, ELB, Auto Scaling, DynamoDB, Lambda, API Gateway, Security Groups, CloudFront, Route53, SQS, SNS, ECS, EKS, CloudWatch, KMS, and CodeBuild.
+
+Add new modules by updating `knowledge-base/terraform-modules-kb.json` and syncing the KB.
+
+## License
+
+This project is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.

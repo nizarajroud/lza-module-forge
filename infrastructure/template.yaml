@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  LZA Terraform Code Generator — Bedrock Agent Action Group Lambda
+
+Parameters:
+  GitHubToken:
+    Type: String
+    NoEcho: true
+    Description: GitHub PAT with repo scope
+  GitHubRepoOwner:
+    Type: String
+    Description: GitHub organization or username
+  GitHubRepoName:
+    Type: String
+    Description: Target repository for generated Terraform code
+  KnowledgeBaseId:
+    Type: String
+    Description: Bedrock Knowledge Base ID
+  BedrockModelId:
+    Type: String
+    Default: "anthropic.claude-sonnet-4-20250514-v1:0"
+    Description: Bedrock model ID for code generation
+
+Globals:
+  Function:
+    Timeout: 120
+    MemorySize: 256
+    Runtime: python3.11
+    Architectures:
+      - arm64
+
+Resources:
+  GeneratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: lza-terraform-generator
+      Description: Generates Terraform IaC using Bedrock RAG and commits to GitHub
+      CodeUri: ../lambda/
+      Handler: src.handler.lambda_handler
+      Environment:
+        Variables:
+          GITHUB_TOKEN: !Ref GitHubToken
+          GITHUB_REPO_OWNER: !Ref GitHubRepoOwner
+          GITHUB_REPO_NAME: !Ref GitHubRepoName
+          KNOWLEDGE_BASE_ID: !Ref KnowledgeBaseId
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource:
+                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/${BedrockModelId}"
+            - Effect: Allow
+              Action:
+                - bedrock:Retrieve
+                - bedrock:RetrieveAndGenerate
+              Resource:
+                - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/${KnowledgeBaseId}"
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "*"
+
+  GeneratorFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${GeneratorFunction}"
+      RetentionInDays: 14
+
+  BedrockAgentPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt GeneratorFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: bedrock.amazonaws.com
+
+Outputs:
+  FunctionArn:
+    Description: Lambda function ARN (use in Bedrock Agent Action Group)
+    Value: !GetAtt GeneratorFunction.Arn
+  FunctionName:
+    Description: Lambda function name
+    Value: !Ref GeneratorFunction
