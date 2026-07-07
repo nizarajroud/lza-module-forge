@@ -46,8 +46,8 @@
         <mxCell id="lza_config" value="LZA Config&lt;br&gt;(YAML)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="data_pipeline">
           <mxGeometry x="20" y="40" width="48" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="extractor" value="extract_lza_config.py&lt;br&gt;extract_tf_registry.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="data_pipeline">
-          <mxGeometry x="150" y="35" width="55" height="55" as="geometry" />
+        <mxCell id="extractor" value="extract_lza_config.py&lt;br&gt;extract_tf_registry.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
+          <mxGeometry x="150" y="38" width="48" height="48" as="geometry" />
         </mxCell>
         <mxCell id="sync" value="sync-kb.sh" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
           <mxGeometry x="290" y="40" width="48" height="48" as="geometry" />
