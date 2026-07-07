@@ -2,17 +2,24 @@
 LZA Config Extractor — Parses AWS Landing Zone Accelerator configuration files
 and produces KB-ready JSON documents for the Bedrock Knowledge Base.
 
+Compatible with: LZA v1.14.x through v1.15.x (latest stable: v1.15.5, released 2026-06-02)
+Reference: https://github.com/awslabs/landing-zone-accelerator-on-aws
+Config schema: https://awslabs.github.io/landing-zone-accelerator-on-aws/latest/typedocs/
+
+This script is GENERIC — it works with any LZA configuration repository that follows
+the standard config schema (accounts-config.yaml, network-config.yaml, etc.).
+Tested against LZA v1.14.2 (Alithya sandbox) and the CCCS Medium sample configuration.
+
 Usage:
     python extract_lza_config.py /path/to/lza-config-repo [--output-dir ./knowledge-base]
 
-Produces 7 JSON files optimized for RAG retrieval:
+Produces 6 JSON files optimized for RAG retrieval:
 1. org-accounts.json        — Organization structure, accounts, OUs
 2. network-topology.json    — VPCs, subnets, CIDRs, transit gateways
 3. security-constraints.json — SCPs (raw + summarized), Config rules
 4. iam-available.json       — Roles, policies, permission sets, boundaries
 5. existing-resources.json  — Already-deployed customizations
 6. naming-conventions.json  — Patterns extracted from config
-7. terraform-modules-kb.json — (Existing, enriched with LZA context)
 """
 
 import argparse
