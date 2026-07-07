@@ -4,6 +4,7 @@ Bedrock model invocation using the Messages API (Claude 3.5+).
 
 import json
 import logging
+import os
 from pathlib import Path
 
 import boto3
@@ -107,8 +108,9 @@ def _invoke_model(prompt: str, system_prompt: str, model_id: str, region: str) -
 def generate_terraform(services: list[str], module_definitions: str, model_id: str, region: str) -> str:
     """Generate Terraform configuration for the requested AWS services."""
     # Load prompts from external files
+    prompt_version = os.environ.get("PROMPT_VERSION", "v2")
     prompts_dir = Path(__file__).parent.parent.parent / "prompts"
-    system_prompt, user_prompt_template = _load_prompt(prompts_dir / "v1.md")
+    system_prompt, user_prompt_template = _load_prompt(prompts_dir / f"{prompt_version}.md")
 
     prompt = user_prompt_template.format(
         services=', '.join(services),
