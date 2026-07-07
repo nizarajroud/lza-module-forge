@@ -1,17 +1,26 @@
 """
 Terraform Registry Extractor — Extracts module definitions from a Terraform
-private registry and produces a KB-ready JSON document.
+private registry OR local module directories and produces a KB-ready JSON document.
 
 Compatible with:
+- Local module directories (parses .tf files directly) ← NEW in v2
 - Terraform Cloud / Terraform Enterprise (API v2)
 - GitLab Terraform Module Registry (API v4)
 - Generic git-based module repos (reads from a manifest file)
 
-This script is GENERIC — it works with any registry that exposes module metadata.
-The output JSON follows the same schema as terraform-modules-kb.json and is
-designed to be ingested by the Bedrock Knowledge Base alongside LZA config documents.
+v2 additions:
+- --source local: reads modules from a local directory, parses variables.tf,
+  outputs.tf, main.tf, versions.tf, README.md, and steering/*.md
+- Extracts: variables (with types, defaults, validations), outputs, resources,
+  provider constraints, examples, best practices, security notes
+- Also ingests steering files as "module standards" documents
 
 Usage:
+    # Local module directory (parses .tf files)
+    python extract_tf_registry.py --source local \
+        --modules-dir /path/to/poc-bnc-terraform-modules \
+        --output-dir ./knowledge-base
+
     # Terraform Cloud / Enterprise
     python extract_tf_registry.py --source tfc \
         --endpoint https://app.terraform.io \
@@ -38,6 +47,7 @@ Output:
 import argparse
 import json
 import logging
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -48,6 +58,236 @@ import yaml
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
+
+
+# ─── Local Module Directory Extractor (v2) ──────────────────────────────────
+
+def extract_from_local(modules_dir: str) -> tuple[list[dict], list[dict]]:
+    """
+    Extract modules from a local directory by parsing .tf and .md files.
+
+    Scans for directories matching `modules/terraform-aws-*` pattern,
+    then parses each module's variables.tf, outputs.tf, main.tf, versions.tf,
+    and README.md to produce structured KB entries.
+
+    Also reads steering/*.md files as "module standards" documents.
+
+    Returns:
+        (modules, standards) — list of module dicts + list of standards dicts
+    """
+    modules_path = Path(modules_dir)
+    modules = []
+    standards = []
+
+    # ─── Parse modules ───────────────────────────────────────────────────
+    modules_subdir = modules_path / "modules"
+    if modules_subdir.exists():
+        for module_dir in sorted(modules_subdir.iterdir()):
+            if not module_dir.is_dir() or not module_dir.name.startswith("terraform-aws-"):
+                continue
+            logger.info("  Parsing module: %s", module_dir.name)
+            module = _parse_module_directory(module_dir, modules_dir)
+            modules.append(module)
+
+    # ─── Parse steering files as standards ───────────────────────────────
+    steering_dir = modules_path / "steering"
+    if steering_dir.exists():
+        for md_file in sorted(steering_dir.glob("*.md")):
+            logger.info("  Parsing standard: %s", md_file.name)
+            standards.append({
+                "documentType": "module-standard",
+                "name": md_file.stem,
+                "filename": md_file.name,
+                "content": md_file.read_text(encoding="utf-8"),
+            })
+
+    return modules, standards
+
+
+def _parse_module_directory(module_dir: Path, repo_root: str) -> dict:
+    """Parse a single module directory and extract structured metadata."""
+    module_name = module_dir.name
+
+    # Parse variables.tf
+    variables = _parse_variables(module_dir / "variables.tf")
+
+    # Parse outputs.tf
+    outputs = _parse_outputs(module_dir / "outputs.tf")
+
+    # Parse main.tf — extract resource types
+    resources = _parse_resources(module_dir / "main.tf")
+
+    # Parse versions.tf — extract provider constraints
+    provider_constraints = _parse_versions(module_dir / "versions.tf")
+
+    # Read README.md
+    readme_content = ""
+    readme_path = module_dir / "README.md"
+    if readme_path.exists():
+        readme_content = readme_path.read_text(encoding="utf-8")
+
+    # Read example if exists
+    example_content = ""
+    example_path = module_dir / "examples" / "complete" / "main.tf"
+    if example_path.exists():
+        example_content = example_path.read_text(encoding="utf-8")
+
+    # Build source path
+    relative_path = module_dir.relative_to(Path(repo_root))
+    source = f"github.com/nizarajroud/poc-bnc-terraform-modules//{relative_path}"
+
+    return {
+        "ModuleName": module_name,
+        "ModuleSource": source,
+        "Description": _extract_description_from_readme(readme_content),
+        "LatestVersion": "latest",
+        "Variables": variables,
+        "RequiredParameters": [v["name"] for v in variables if v.get("required")],
+        "OptionalParameters": [v["name"] for v in variables if not v.get("required")],
+        "Outputs": outputs,
+        "Resources": resources,
+        "ProviderConstraints": provider_constraints,
+        "Example": example_content,
+        "README": readme_content,
+        "BestPractices": "",
+        "SecurityNotes": "",
+        "RegistryType": "local",
+    }
+
+
+def _parse_variables(filepath: Path) -> list[dict]:
+    """Parse variables.tf and extract variable definitions."""
+    if not filepath.exists():
+        return []
+
+    content = filepath.read_text(encoding="utf-8")
+    variables = []
+    # Regex to match variable blocks
+    var_pattern = re.compile(
+        r'variable\s+"(\w+)"\s*\{(.*?)\n\}',
+        re.DOTALL,
+    )
+
+    for match in var_pattern.finditer(content):
+        var_name = match.group(1)
+        var_body = match.group(2)
+
+        var_info = {"name": var_name}
+
+        # Extract description
+        desc_match = re.search(r'description\s*=\s*"([^"]*)"', var_body)
+        if desc_match:
+            var_info["description"] = desc_match.group(1)
+
+        # Extract type
+        type_match = re.search(r'type\s*=\s*(\S+)', var_body)
+        if type_match:
+            var_info["type"] = type_match.group(1)
+
+        # Check if has default (= not required)
+        has_default = "default" in var_body and re.search(r'^\s*default\s*=', var_body, re.MULTILINE)
+        var_info["required"] = not has_default
+
+        # Extract default value (simple cases)
+        default_match = re.search(r'default\s*=\s*(".*?"|true|false|null|\d+|\[\]|\{\})', var_body)
+        if default_match:
+            var_info["default"] = default_match.group(1)
+
+        # Check if has validation
+        var_info["has_validation"] = "validation {" in var_body or "validation{" in var_body
+
+        variables.append(var_info)
+
+    return variables
+
+
+def _parse_outputs(filepath: Path) -> list[dict]:
+    """Parse outputs.tf and extract output definitions."""
+    if not filepath.exists():
+        return []
+
+    content = filepath.read_text(encoding="utf-8")
+    outputs = []
+
+    out_pattern = re.compile(
+        r'output\s+"(\w+)"\s*\{(.*?)\n\}',
+        re.DOTALL,
+    )
+
+    for match in out_pattern.finditer(content):
+        out_name = match.group(1)
+        out_body = match.group(2)
+
+        out_info = {"name": out_name}
+
+        desc_match = re.search(r'description\s*=\s*"([^"]*)"', out_body)
+        if desc_match:
+            out_info["description"] = desc_match.group(1)
+
+        value_match = re.search(r'value\s*=\s*(.*)', out_body)
+        if value_match:
+            out_info["value_expression"] = value_match.group(1).strip()
+
+        outputs.append(out_info)
+
+    return outputs
+
+
+def _parse_resources(filepath: Path) -> list[dict]:
+    """Parse main.tf and extract resource types and names."""
+    if not filepath.exists():
+        return []
+
+    content = filepath.read_text(encoding="utf-8")
+    resources = []
+
+    res_pattern = re.compile(r'resource\s+"(\w+)"\s+"(\w+)"')
+    for match in res_pattern.finditer(content):
+        resources.append({
+            "type": match.group(1),
+            "name": match.group(2),
+        })
+
+    return resources
+
+
+def _parse_versions(filepath: Path) -> dict:
+    """Parse versions.tf and extract provider/terraform constraints."""
+    if not filepath.exists():
+        return {}
+
+    content = filepath.read_text(encoding="utf-8")
+    constraints = {}
+
+    tf_version = re.search(r'required_version\s*=\s*"([^"]*)"', content)
+    if tf_version:
+        constraints["terraform"] = tf_version.group(1)
+
+    provider_version = re.search(r'version\s*=\s*"([^"]*)"', content)
+    if provider_version:
+        constraints["aws_provider"] = provider_version.group(1)
+
+    return constraints
+
+
+def _extract_description_from_readme(readme: str) -> str:
+    """Extract the first paragraph after the title as description."""
+    lines = readme.strip().split("\n")
+    # Skip title line (# ...)
+    desc_lines = []
+    started = False
+    for line in lines[1:]:
+        stripped = line.strip()
+        if not started and stripped:
+            started = True
+        if started:
+            if stripped.startswith("#") or stripped.startswith("|"):
+                break
+            if stripped:
+                desc_lines.append(stripped)
+            else:
+                break
+    return " ".join(desc_lines)
 
 
 # ─── Terraform Cloud / Enterprise Extractor ─────────────────────────────────
@@ -206,20 +446,22 @@ def _build_module_entry(name: str, source: str, description: str, version: str, 
     }
 
 
-def write_output(modules: list[dict], output_dir: str):
-    """Write the modules to the KB-ready JSON file."""
+def write_output(modules: list[dict], output_dir: str, standards: list[dict] = None):
+    """Write the modules and standards to KB-ready JSON files."""
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    filepath = output_path / "terraform-modules-kb.json"
 
+    # Write modules
+    filepath = output_path / "terraform-modules-kb.json"
     document = {
         "documentType": "terraform-module-registry",
         "extractedAt": datetime.now(timezone.utc).isoformat(),
         "totalModules": len(modules),
         "description": (
-            "Organization-approved Terraform modules. When generating IaC, "
-            "prefer these modules over raw resource blocks. Use the ModuleSource "
-            "as the 'source' argument in module blocks."
+            "Organization-approved Terraform modules. When generating a NEW module, "
+            "follow the exact same structure, naming conventions, variable patterns, "
+            "validation blocks, and security practices as these existing modules. "
+            "Use them as the REFERENCE PATTERN to replicate."
         ),
         "TerraformModules": modules,
     }
@@ -228,17 +470,38 @@ def write_output(modules: list[dict], output_dir: str):
         json.dump(document, f, indent=2)
     logger.info("Written: %s (%d modules, %d bytes)", filepath, len(modules), filepath.stat().st_size)
 
+    # Write standards (if provided)
+    if standards:
+        standards_filepath = output_path / "terraform-module-standards-kb.json"
+        standards_doc = {
+            "documentType": "terraform-module-standards",
+            "extractedAt": datetime.now(timezone.utc).isoformat(),
+            "totalDocuments": len(standards),
+            "description": (
+                "Organization standards for Terraform module development. "
+                "ALL generated modules MUST comply with these standards. "
+                "These define: file structure, naming conventions, variable patterns, "
+                "security requirements, testing discipline, and versioning rules."
+            ),
+            "standards": standards,
+        }
+        with open(standards_filepath, "w") as f:
+            json.dump(standards_doc, f, indent=2)
+        logger.info("Written: %s (%d standards, %d bytes)",
+                    standards_filepath, len(standards), standards_filepath.stat().st_size)
+
 
 # ─── CLI ────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Extract Terraform module definitions from a private registry into KB-ready JSON"
+        description="Extract Terraform module definitions from a private registry or local modules into KB-ready JSON"
     )
     parser.add_argument(
-        "--source", required=True, choices=["tfc", "gitlab", "manifest"],
-        help="Registry source type: tfc (Terraform Cloud/Enterprise), gitlab, or manifest (local YAML)"
+        "--source", required=True, choices=["local", "tfc", "gitlab", "manifest"],
+        help="Registry source type: local (parse .tf files), tfc (Terraform Cloud/Enterprise), gitlab, or manifest (local YAML)"
     )
+    parser.add_argument("--modules-dir", help="Path to the modules repository root (for local source)")
     parser.add_argument("--endpoint", help="Registry API endpoint URL (for tfc/gitlab)")
     parser.add_argument("--organization", help="Organization name (for tfc)")
     parser.add_argument("--group-id", help="GitLab group ID (for gitlab)")
@@ -255,7 +518,14 @@ def main():
 
     logger.info("Extracting modules from: %s", args.source)
 
-    if args.source == "tfc":
+    standards = None
+
+    if args.source == "local":
+        if not args.modules_dir:
+            parser.error("--modules-dir is required for local source")
+        modules, standards = extract_from_local(args.modules_dir)
+
+    elif args.source == "tfc":
         if not all([args.endpoint, args.organization, args.token]):
             parser.error("--endpoint, --organization, and --token are required for tfc source")
         modules = extract_from_tfc(args.endpoint, args.organization, args.token)
@@ -274,8 +544,10 @@ def main():
         logger.warning("No modules found!")
         sys.exit(1)
 
-    write_output(modules, args.output_dir)
+    write_output(modules, args.output_dir, standards)
     logger.info("=== Extraction complete: %d modules ===", len(modules))
+    if standards:
+        logger.info("=== Standards extracted: %d documents ===", len(standards))
 
 
 if __name__ == "__main__":

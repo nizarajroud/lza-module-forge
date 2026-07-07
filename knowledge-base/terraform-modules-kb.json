@@ -1,152 +1,171 @@
 {
   "documentType": "terraform-module-registry",
-  "extractedAt": "2026-07-07T09:52:00.504408+00:00",
-  "totalModules": 5,
-  "description": "Organization-approved Terraform modules. When generating IaC, prefer these modules over raw resource blocks. Use the ModuleSource as the 'source' argument in module blocks.",
+  "extractedAt": "2026-07-07T14:39:02.315957+00:00",
+  "totalModules": 1,
+  "description": "Organization-approved Terraform modules. When generating a NEW module, follow the exact same structure, naming conventions, variable patterns, validation blocks, and security practices as these existing modules. Use them as the REFERENCE PATTERN to replicate.",
   "TerraformModules": [
     {
-      "ModuleName": "vpc",
-      "ModuleSource": "git::https://gitlab.example.com/terraform-modules/vpc.git?ref=v2.3.0",
-      "Description": "Creates a VPC with standard subnet tiers (Web, App, Data, Mgmt, TgwAttach)",
-      "LatestVersion": "2.3.0",
+      "ModuleName": "terraform-aws-bedrock-guardrail",
+      "ModuleSource": "github.com/nizarajroud/poc-bnc-terraform-modules//modules/terraform-aws-bedrock-guardrail",
+      "Description": "Terraform module to create and manage Amazon Bedrock Guardrails with content filtering, PII detection, denied topics, and word filters.",
+      "LatestVersion": "latest",
+      "Variables": [
+        {
+          "name": "name",
+          "description": "Name of the Bedrock Guardrail",
+          "type": "string",
+          "required": true,
+          "has_validation": true
+        },
+        {
+          "name": "description",
+          "description": "Description of the guardrail",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "has_validation": false
+        },
+        {
+          "name": "blocked_input_messaging",
+          "description": "Message returned when input is blocked",
+          "type": "string",
+          "required": false,
+          "default": "\"Your request was blocked by our content policy.\"",
+          "has_validation": false
+        },
+        {
+          "name": "blocked_output_messaging",
+          "description": "Message returned when output is blocked",
+          "type": "string",
+          "required": false,
+          "default": "\"The response was blocked by our content policy.\"",
+          "has_validation": false
+        },
+        {
+          "name": "content_filters",
+          "description": "Content filter configuration",
+          "type": "list(object({",
+          "required": false,
+          "has_validation": true
+        },
+        {
+          "name": "denied_topics",
+          "description": "List of denied topics",
+          "type": "list(object({",
+          "required": false,
+          "default": "[]",
+          "has_validation": false
+        },
+        {
+          "name": "pii_entities",
+          "description": "PII entity types to detect and action",
+          "type": "list(object({",
+          "required": false,
+          "default": "[]",
+          "has_validation": true
+        },
+        {
+          "name": "word_filters",
+          "description": "List of exact words to block",
+          "type": "list(string)",
+          "required": false,
+          "default": "[]",
+          "has_validation": false
+        },
+        {
+          "name": "managed_word_lists",
+          "description": "Managed word list types to enable",
+          "type": "list(string)",
+          "required": false,
+          "has_validation": false
+        },
+        {
+          "name": "kms_key_arn",
+          "description": "ARN of the KMS key for guardrail encryption. If not provided, AWS-managed key is used.",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "has_validation": false
+        },
+        {
+          "name": "create_version",
+          "description": "Whether to create a guardrail version (recommended for production)",
+          "type": "bool",
+          "required": false,
+          "default": "true",
+          "has_validation": false
+        },
+        {
+          "name": "tags",
+          "description": "Tags to apply to the guardrail",
+          "type": "map(string)",
+          "required": false,
+          "default": "{}",
+          "has_validation": false
+        }
+      ],
       "RequiredParameters": [
-        "cidr_block",
-        "environment",
-        "project_name"
+        "name"
       ],
       "OptionalParameters": [
-        "enable_flow_logs",
-        "enable_dns_hostnames",
-        "subnet_tiers"
+        "description",
+        "blocked_input_messaging",
+        "blocked_output_messaging",
+        "content_filters",
+        "denied_topics",
+        "pii_entities",
+        "word_filters",
+        "managed_word_lists",
+        "kms_key_arn",
+        "create_version",
+        "tags"
       ],
-      "Dependencies": [],
-      "BestPractices": "Always use private subnets for workloads.\nAttach to Transit Gateway via TgwAttach subnets.\nEnable VPC flow logs for audit compliance.\n",
-      "SecurityNotes": "Do not create public subnets unless specifically approved.\nUse NACLs for network segmentation between tiers.\nVPC endpoints are mandatory for S3 and DynamoDB access.\n",
       "Outputs": [
-        "vpc_id",
-        "private_subnet_ids",
-        "public_subnet_ids",
-        "tgw_attach_subnet_ids"
+        {
+          "name": "guardrail_id",
+          "description": "The ID of the guardrail",
+          "value_expression": "aws_bedrock_guardrail.this.guardrail_id"
+        },
+        {
+          "name": "guardrail_arn",
+          "description": "The ARN of the guardrail",
+          "value_expression": "aws_bedrock_guardrail.this.guardrail_arn"
+        },
+        {
+          "name": "guardrail_version",
+          "description": "The version number of the guardrail (if created)",
+          "value_expression": "var.create_version ? aws_bedrock_guardrail_version.this[0].version : null"
+        },
+        {
+          "name": "status",
+          "description": "The status of the guardrail",
+          "value_expression": "aws_bedrock_guardrail.this.status"
+        },
+        {
+          "name": "kms_key_arn",
+          "description": "The KMS key ARN used for guardrail encryption (null if AWS-managed)",
+          "value_expression": "var.kms_key_arn"
+        }
       ],
-      "RegistryType": "manifest"
-    },
-    {
-      "ModuleName": "eks-cluster",
-      "ModuleSource": "git::https://gitlab.example.com/terraform-modules/eks-cluster.git?ref=v3.1.0",
-      "Description": "Deploys an EKS cluster with managed node groups and IRSA",
-      "LatestVersion": "3.1.0",
-      "RequiredParameters": [
-        "cluster_name",
-        "vpc_id",
-        "subnet_ids",
-        "kubernetes_version"
+      "Resources": [
+        {
+          "type": "aws_bedrock_guardrail",
+          "name": "this"
+        },
+        {
+          "type": "aws_bedrock_guardrail_version",
+          "name": "this"
+        }
       ],
-      "OptionalParameters": [
-        "node_instance_types",
-        "node_min_size",
-        "node_max_size",
-        "enable_cluster_autoscaler",
-        "enable_container_insights"
-      ],
-      "Dependencies": [
-        "vpc"
-      ],
-      "BestPractices": "Use managed node groups for simplified patching.\nEnable IRSA for pod-level IAM (never use node role for app permissions).\nDeploy in private subnets only.\n",
-      "SecurityNotes": "Restrict API server endpoint to private access.\nEnable envelope encryption with KMS for secrets.\nUse Calico or VPC CNI network policies.\n",
-      "Outputs": [
-        "cluster_arn",
-        "cluster_endpoint",
-        "cluster_security_group_id",
-        "oidc_provider_arn"
-      ],
-      "RegistryType": "manifest"
-    },
-    {
-      "ModuleName": "rds-aurora",
-      "ModuleSource": "git::https://gitlab.example.com/terraform-modules/rds-aurora.git?ref=v1.8.0",
-      "Description": "Deploys an Aurora cluster (PostgreSQL or MySQL) with multi-AZ",
-      "LatestVersion": "1.8.0",
-      "RequiredParameters": [
-        "cluster_name",
-        "engine",
-        "vpc_id",
-        "subnet_ids",
-        "master_username"
-      ],
-      "OptionalParameters": [
-        "engine_version",
-        "instance_class",
-        "replica_count",
-        "backup_retention_period",
-        "kms_key_arn"
-      ],
-      "Dependencies": [
-        "vpc"
-      ],
-      "BestPractices": "Use Aurora PostgreSQL for new workloads (better performance/cost).\nEnable Performance Insights for query analysis.\nSet backup retention to minimum 7 days (35 for production).\n",
-      "SecurityNotes": "Encryption at rest is mandatory (SCP enforced).\nPlace in Data-tier subnets only.\nUse IAM database authentication when possible.\nNever expose to public internet.\n",
-      "Outputs": [
-        "cluster_endpoint",
-        "reader_endpoint",
-        "cluster_arn",
-        "security_group_id"
-      ],
-      "RegistryType": "manifest"
-    },
-    {
-      "ModuleName": "s3-bucket",
-      "ModuleSource": "git::https://gitlab.example.com/terraform-modules/s3-bucket.git?ref=v2.0.1",
-      "Description": "Creates an S3 bucket with encryption, versioning, and lifecycle policies",
-      "LatestVersion": "2.0.1",
-      "RequiredParameters": [
-        "bucket_name",
-        "environment"
-      ],
-      "OptionalParameters": [
-        "versioning_enabled",
-        "lifecycle_rules",
-        "replication_configuration",
-        "kms_key_arn"
-      ],
-      "Dependencies": [],
-      "BestPractices": "Enable versioning for all buckets containing application data.\nUse lifecycle rules to transition old objects to Glacier.\nBlock all public access (enforced by SCP).\n",
-      "SecurityNotes": "Server-side encryption is mandatory (SCP enforced).\nEnforce HTTPS-only access via bucket policy.\nEnable access logging for audit buckets.\n",
-      "Outputs": [
-        "bucket_arn",
-        "bucket_id",
-        "bucket_domain_name"
-      ],
-      "RegistryType": "manifest"
-    },
-    {
-      "ModuleName": "lambda-function",
-      "ModuleSource": "git::https://gitlab.example.com/terraform-modules/lambda-function.git?ref=v1.5.0",
-      "Description": "Deploys a Lambda function with IAM role, CloudWatch logs, and VPC config",
-      "LatestVersion": "1.5.0",
-      "RequiredParameters": [
-        "function_name",
-        "handler",
-        "runtime",
-        "source_path"
-      ],
-      "OptionalParameters": [
-        "memory_size",
-        "timeout",
-        "vpc_config",
-        "environment_variables",
-        "layers",
-        "reserved_concurrency"
-      ],
-      "Dependencies": [],
-      "BestPractices": "Use arm64 (Graviton) runtime for cost savings.\nSet reserved concurrency for critical functions.\nUse Lambda Powertools for structured logging.\n",
-      "SecurityNotes": "Follow least-privilege for the execution role.\nNever embed secrets in environment variables \u2014 use Secrets Manager.\nDeploy in VPC only if accessing VPC resources.\n",
-      "Outputs": [
-        "function_arn",
-        "function_name",
-        "invoke_arn",
-        "role_arn"
-      ],
-      "RegistryType": "manifest"
+      "ProviderConstraints": {
+        "terraform": ">= 1.5",
+        "aws_provider": ">= 1.5"
+      },
+      "Example": "terraform {\n  required_version = \">= 1.5\"\n\n  required_providers {\n    aws = {\n      source  = \"hashicorp/aws\"\n      version = \">= 5.60.0\"\n    }\n  }\n}\n\nprovider \"aws\" {\n  region = \"us-east-1\"\n}\n\nlocals {\n  tags = {\n    Environment = \"dev\"\n    Project     = \"bnc-bedrock-onboarding\"\n    Team        = \"cloud-platform\"\n    ManagedBy   = \"terraform\"\n  }\n}\n\nmodule \"bedrock_guardrail\" {\n  source = \"../../\"\n\n  name        = \"bnc-financial-guardrail\"\n  description = \"Production guardrail for BNC AI services - financial services compliance\"\n\n  content_filters = [\n    { type = \"HATE\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"INSULTS\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"SEXUAL\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"VIOLENCE\", input_strength = \"MEDIUM\", output_strength = \"HIGH\" },\n    { type = \"MISCONDUCT\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"PROMPT_ATTACK\", input_strength = \"HIGH\", output_strength = \"NONE\" },\n  ]\n\n  denied_topics = [\n    {\n      name       = \"investment_advice\"\n      definition = \"Providing specific investment recommendations, stock picks, or personalized financial advice\"\n      examples   = [\"Should I buy AAPL?\", \"What's the best ETF?\", \"Invest my savings\"]\n    },\n    {\n      name       = \"competitor_info\"\n      definition = \"Sharing confidential information about competitor banks or internal strategies\"\n      examples   = [\"What is Desjardins doing?\", \"Compare us to TD Bank internally\"]\n    }\n  ]\n\n  pii_entities = [\n    { type = \"CREDIT_DEBIT_CARD_NUMBER\", action = \"BLOCK\" },\n    { type = \"US_SOCIAL_SECURITY_NUMBER\", action = \"BLOCK\" },\n    { type = \"EMAIL\", action = \"ANONYMIZE\" },\n    { type = \"PHONE\", action = \"ANONYMIZE\" },\n    { type = \"NAME\", action = \"ANONYMIZE\" },\n  ]\n\n  managed_word_lists = [\"PROFANITY\"]\n\n  tags = local.tags\n}\n\noutput \"guardrail_id\" {\n  value = module.bedrock_guardrail.guardrail_id\n}\n\noutput \"guardrail_arn\" {\n  value = module.bedrock_guardrail.guardrail_arn\n}\n\noutput \"guardrail_version\" {\n  value = module.bedrock_guardrail.guardrail_version\n}\n",
+      "README": "# terraform-aws-bedrock-guardrail\n\nTerraform module to create and manage Amazon Bedrock Guardrails with content filtering, PII detection, denied topics, and word filters.\n\n## Requirements\n\n| Name | Version |\n|------|---------|\n| terraform | >= 1.5 |\n| aws | >= 5.60.0 |\n\n## Usage\n\n```hcl\nmodule \"bedrock_guardrail\" {\n  source = \"github.com/nizarajroud/poc-bnc-terraform-modules//modules/terraform-aws-bedrock-guardrail?ref=v1.0.0\"\n\n  name        = \"financial-services-guardrail\"\n  description = \"Guardrail for BNC AI workloads\"\n\n  content_filters = [\n    { type = \"HATE\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"SEXUAL\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"VIOLENCE\", input_strength = \"MEDIUM\", output_strength = \"HIGH\" },\n    { type = \"PROMPT_ATTACK\", input_strength = \"HIGH\", output_strength = \"NONE\" },\n  ]\n\n  denied_topics = [\n    {\n      name       = \"investment_advice\"\n      definition = \"Providing specific investment recommendations or financial advice\"\n      examples   = [\"Should I buy this stock?\", \"What should I invest in?\"]\n    }\n  ]\n\n  pii_entities = [\n    { type = \"CREDIT_DEBIT_CARD_NUMBER\", action = \"BLOCK\" },\n    { type = \"US_SOCIAL_SECURITY_NUMBER\", action = \"BLOCK\" },\n    { type = \"EMAIL\", action = \"ANONYMIZE\" },\n    { type = \"PHONE\", action = \"ANONYMIZE\" },\n  ]\n\n  kms_key_arn = \"arn:aws:kms:ca-central-1:123456789012:key/example-key-id\"  # optional\n\n  tags = {\n    Environment = \"dev\"\n    Project     = \"bnc-bedrock-onboarding\"\n    ManagedBy   = \"terraform\"\n  }\n}\n```\n\n## Inputs\n\n| Name | Description | Type | Default | Required |\n|------|-------------|------|---------|----------|\n| name | Name of the guardrail (1-50 chars) | `string` | - | yes |\n| description | Description | `string` | `\"\"` | no |\n| blocked_input_messaging | Message when input is blocked | `string` | (default message) | no |\n| blocked_output_messaging | Message when output is blocked | `string` | (default message) | no |\n| content_filters | Content filter rules (validated) | `list(object)` | All HIGH | no |\n| denied_topics | Topics to deny | `list(object)` | `[]` | no |\n| pii_entities | PII types to detect (validated) | `list(object)` | `[]` | no |\n| word_filters | Exact words to block | `list(string)` | `[]` | no |\n| managed_word_lists | Managed word lists | `list(string)` | `[\"PROFANITY\"]` | no |\n| kms_key_arn | KMS key ARN for encryption (null = AWS-managed) | `string` | `null` | no |\n| create_version | Create a guardrail version | `bool` | `true` | no |\n| tags | Resource tags | `map(string)` | `{}` | no |\n\n## Outputs\n\n| Name | Description |\n|------|-------------|\n| guardrail_id | The ID of the guardrail |\n| guardrail_arn | The ARN of the guardrail |\n| guardrail_version | Version number (if created) |\n| status | Status of the guardrail |\n| kms_key_arn | KMS key ARN used (null if AWS-managed) |\n\n## Security\n\n- KMS encryption supported via `kms_key_arn` variable\n- Validation blocks enforce allowed enum values (prevents typos)\n- Tags enforced via Sentinel policy (see `policies/sentinel/`)\n- Region defaults to `ca-central-1` (data residency compliance)\n",
+      "BestPractices": "",
+      "SecurityNotes": "",
+      "RegistryType": "local"
     }
   ]
 }
