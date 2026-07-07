@@ -112,10 +112,7 @@ def generate_terraform(services: list[str], module_definitions: str, model_id: s
     prompts_dir = Path(__file__).parent.parent.parent / "prompts"
     system_prompt, user_prompt_template = _load_prompt(prompts_dir / f"{prompt_version}.md")
 
-    prompt = user_prompt_template.format(
-        services=', '.join(services),
-        module_definitions=module_definitions,
-    )
+    prompt = user_prompt_template.replace("{services}", ', '.join(services)).replace("{module_definitions}", module_definitions)
 
     return _invoke_model(prompt, system_prompt, model_id, region)
 
