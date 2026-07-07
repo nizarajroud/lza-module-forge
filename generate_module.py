@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).parent / "lambda"))
 
 from src.bedrock_client import generate_terraform, generate_readme
 from src.knowledge_base import retrieve_module_definitions
-from src.local_writer import write_module_locally
+from src.local_writer import write_module_locally, parse_multi_file_response
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -98,39 +98,51 @@ def main():
 
     # Step 2: Generate Terraform module
     logger.info("[Step 2/3] Generating Terraform module via Claude...")
-    main_tf_content = generate_terraform(
+    raw_response = generate_terraform(
         services=services,
         module_definitions=module_definitions,
         model_id=model_id,
         region=region,
     )
-    logger.info("  Generated main.tf: %d characters", len(main_tf_content))
+    logger.info("  Raw response: %d characters", len(raw_response))
 
-    # Step 3: Generate README
-    logger.info("[Step 3/3] Generating README...")
-    readme_content = generate_readme(
-        services=services,
-        terraform_code=main_tf_content,
-        model_id=model_id,
-        region=region,
-    )
-    logger.info("  Generated README.md: %d characters", len(readme_content))
+    # Parse multi-file response (v2 prompt uses --- FILE: xxx --- delimiters)
+    files = parse_multi_file_response(raw_response)
+
+    if not files:
+        # Fallback: if no delimiters found, treat entire response as main.tf (v1 behavior)
+        logger.warning("  No file delimiters found — falling back to single main.tf")
+        files = {"main.tf": raw_response}
+    else:
+        logger.info("  Parsed %d files: %s", len(files), list(files.keys()))
+
+    # Step 3: Generate README (only if not already in the parsed files)
+    if "README.md" not in files:
+        logger.info("[Step 3/3] Generating README...")
+        readme_content = generate_readme(
+            services=services,
+            terraform_code=files.get("main.tf", raw_response),
+            model_id=model_id,
+            region=region,
+        )
+        files["README.md"] = readme_content
+        logger.info("  Generated README.md: %d characters", len(readme_content))
+    else:
+        logger.info("[Step 3/3] README already included in generated files — skipping")
 
     if args.dry_run:
         logger.info("\n=== DRY RUN — would write to: %s/%s-%s/ ===", output_dir, module_prefix, module_name)
-        logger.info("\n--- main.tf (first 2000 chars) ---")
-        print(main_tf_content[:2000])
-        logger.info("\n--- README.md (first 1000 chars) ---")
-        print(readme_content[:1000])
+        for filename, content in files.items():
+            logger.info("\n--- %s (%d chars) ---", filename, len(content))
+            print(content[:1500])
+            if len(content) > 1500:
+                print(f"\n... ({len(content) - 1500} more chars)")
         return
 
     # Write locally
     result = write_module_locally(
         module_name=module_name,
-        files={
-            "main.tf": main_tf_content,
-            "README.md": readme_content,
-        },
+        files=files,
         output_dir=output_dir,
         module_prefix=module_prefix,
     )

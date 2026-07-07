@@ -7,9 +7,58 @@ Generates the full module directory structure expected by the org standards.
 
 import logging
 import os
+import re
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+
+def parse_multi_file_response(response: str) -> dict[str, str]:
+    """
+    Parse Claude's response containing multiple files delimited by markers.
+
+    Expected format:
+        --- FILE: main.tf ---
+        <content>
+
+        --- FILE: variables.tf ---
+        <content>
+
+        --- FILE: examples/complete/main.tf ---
+        <content>
+
+    Returns:
+        Dict of filename → content (e.g., {"main.tf": "...", "variables.tf": "..."})
+    """
+    files = {}
+    current_file = None
+    current_content = []
+
+    for line in response.split("\n"):
+        # Match delimiter: --- FILE: <path> ---
+        match = re.match(r'^---\s*FILE:\s*(.+?)\s*---\s*$', line)
+        if match:
+            # Save previous file
+            if current_file:
+                files[current_file] = "\n".join(current_content).strip()
+            current_file = match.group(1).strip()
+            current_content = []
+        else:
+            current_content.append(line)
+
+    # Save last file
+    if current_file:
+        files[current_file] = "\n".join(current_content).strip()
+
+    # Clean up: remove any markdown fences that Claude might add despite instructions
+    for filename in files:
+        content = files[filename]
+        # Remove leading/trailing ```hcl or ``` markers
+        content = re.sub(r'^```(?:hcl)?\n?', '', content)
+        content = re.sub(r'\n?```\s*$', '', content)
+        files[filename] = content.strip()
+
+    return files
 
 
 def write_module_locally(
@@ -45,13 +94,15 @@ def write_module_locally(
     created_files = {}
 
     for filename, content in files.items():
+        if not content:
+            continue
         # Handle nested paths (e.g., "examples/complete/main.tf")
         file_path = module_path / filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        file_path.write_text(content, encoding="utf-8")
+        file_path.write_text(content + "\n", encoding="utf-8")
         created_files[filename] = str(file_path)
-        logger.info("Written: %s", file_path)
+        logger.info("Written: %s (%d bytes)", file_path, len(content))
 
     logger.info(
         "Module '%s' written to: %s (%d files)",
