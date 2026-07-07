@@ -41,7 +41,7 @@
                     <mxGeometry x="40" y="155" width="55" height="55" as="geometry"/>
                 </mxCell>
                 <mxCell id="data_pipeline" value="Data Pipeline (offline)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontSize=10;fontColor=#666666;container=1;dropTarget=1;" parent="1" vertex="1">
-                    <mxGeometry x="30" y="520" width="380" height="190" as="geometry"/>
+                    <mxGeometry x="30" y="520" width="440" height="190" as="geometry"/>
                 </mxCell>
                 <mxCell id="lza_config" value="LZA Config&lt;br&gt;(YAML)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" parent="data_pipeline" vertex="1">
                     <mxGeometry x="20" y="30" width="48" height="48" as="geometry"/>
@@ -55,19 +55,25 @@
                 <mxCell id="extractor_tf" value="extract_tf_registry.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
                     <mxGeometry x="130" y="107" width="44" height="44" as="geometry"/>
                 </mxCell>
+                <mxCell id="json_docs" value="JSON Files&lt;br&gt;(knowledge-base/)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="data_pipeline">
+                    <mxGeometry x="230" y="62" width="48" height="48" as="geometry"/>
+                </mxCell>
                 <mxCell id="sync" value="sync-kb.sh" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
-                    <mxGeometry x="280" y="68" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="340" y="68" width="48" height="48" as="geometry"/>
                 </mxCell>
                 <mxCell id="ep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="lza_config" target="extractor_lza">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="extractor_lza" target="sync">
+                <mxCell id="ep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="extractor_lza" target="json_docs">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="ep3a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="tf_modules" target="extractor_tf">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ep3b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="extractor_tf" target="sync">
+                <mxCell id="ep3b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="extractor_tf" target="json_docs">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ep4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="json_docs" target="sync">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="ep3" value="S3 + Ingest" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="sync" target="s3">
