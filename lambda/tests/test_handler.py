@@ -73,15 +73,19 @@ class TestBuildResponse:
 
 
 class TestLambdaHandler:
-    @patch("src.handler.commit_file")
+    @patch("src.handler.write_module_locally")
     @patch("src.handler.generate_readme")
     @patch("src.handler.generate_terraform")
     @patch("src.handler.retrieve_module_definitions")
-    def test_happy_path(self, mock_kb, mock_tf, mock_readme, mock_commit):
+    def test_happy_path(self, mock_kb, mock_tf, mock_readme, mock_write):
         mock_kb.return_value = "module defs here"
         mock_tf.return_value = "resource aws_instance {}"
         mock_readme.return_value = "# README"
-        mock_commit.return_value = {"content": {"html_url": "https://github.com/..."}}
+        mock_write.return_value = {
+            "module_name": "terraform-aws-web-app",
+            "module_path": "/tmp/generated-modules/terraform-aws-web-app",
+            "files_created": {"main.tf": "/tmp/.../main.tf", "README.md": "/tmp/.../README.md"},
+        }
 
         event = _make_event()
         result = lambda_handler(event, None)
@@ -90,7 +94,7 @@ class TestLambdaHandler:
         assert mock_kb.called
         assert mock_tf.called
         assert mock_readme.called
-        assert mock_commit.call_count == 2  # main.tf + README.md
+        assert mock_write.called
 
     def test_missing_property_returns_400(self):
         event = {

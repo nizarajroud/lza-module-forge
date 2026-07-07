@@ -1,9 +1,11 @@
 """
-Lambda handler for LZA Terraform code generation.
+Lambda handler for LZA Terraform module generation.
 
 Receives a request from a Bedrock Agent Action Group, queries a Knowledge Base
-for Terraform module definitions, invokes Claude to generate IaC code + README,
-and commits both to a GitHub repository.
+for Terraform module patterns and standards, invokes Claude to generate a
+complete Terraform module, and either:
+- Writes it locally (OUTPUT_MODE=local) for review before commit
+- Commits it to GitHub (OUTPUT_MODE=github) for direct integration
 """
 
 import json
@@ -13,15 +15,21 @@ import os
 from src.bedrock_client import generate_terraform, generate_readme
 from src.knowledge_base import retrieve_module_definitions
 from src.github_client import commit_file
+from src.local_writer import write_module_locally
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # Configuration from environment variables
-GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
-GITHUB_REPO_OWNER = os.environ["GITHUB_REPO_OWNER"]
-GITHUB_REPO_NAME = os.environ["GITHUB_REPO_NAME"]
-KNOWLEDGE_BASE_ID = os.environ["KNOWLEDGE_BASE_ID"]
+OUTPUT_MODE = os.environ.get("OUTPUT_MODE", "local")
+OUTPUT_MODULES_DIR = os.environ.get("OUTPUT_MODULES_DIR", "/tmp/generated-modules")
+MODULE_PREFIX = os.environ.get("MODULE_PREFIX", "terraform-aws")
+
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO_OWNER = os.environ.get("GITHUB_REPO_OWNER", "")
+GITHUB_REPO_NAME = os.environ.get("GITHUB_REPO_NAME", "")
+
+KNOWLEDGE_BASE_ID = os.environ.get("KNOWLEDGE_BASE_ID", "")
 BEDROCK_MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "us.anthropic.claude-sonnet-4-5-20250929-v1:0")
 AWS_REGION = os.environ.get("AWS_REGION", "ca-central-1")
 
@@ -38,8 +46,8 @@ def lambda_handler(event, context):
         customization_name = properties["CustomizationName"]
         aws_services = [s.strip() for s in properties["AwsServices"].split(",")]
 
-        # Directory in the target repo
-        directory_path = f"{customization_name}-{account_name}"
+        # Directory path (used for GitHub mode)
+        module_name = customization_name
 
         # Step 1: Retrieve relevant module definitions from Knowledge Base
         logger.info("Querying Knowledge Base for services: %s", aws_services)
@@ -68,36 +76,61 @@ def lambda_handler(event, context):
             region=AWS_REGION,
         )
 
-        # Step 4: Commit both files to GitHub
-        main_tf_path = f"{directory_path}/main.tf"
-        readme_path = f"{directory_path}/README.md"
+        # Step 4: Output — local or GitHub
+        module_name = customization_name
 
-        commit_file(
-            owner=GITHUB_REPO_OWNER,
-            repo=GITHUB_REPO_NAME,
-            path=main_tf_path,
-            token=GITHUB_TOKEN,
-            message=f"feat: add Terraform config for {account_name}",
-            content=main_tf_content,
-        )
+        if OUTPUT_MODE == "local":
+            # Write to local filesystem
+            logger.info("Writing module locally to: %s", OUTPUT_MODULES_DIR)
+            result = write_module_locally(
+                module_name=module_name,
+                files={
+                    "main.tf": main_tf_content,
+                    "README.md": readme_content,
+                },
+                output_dir=OUTPUT_MODULES_DIR,
+                module_prefix=MODULE_PREFIX,
+            )
+            return _build_response(event, 200, {
+                "message": f"Module generated locally: {result['module_name']}",
+                "module_path": result["module_path"],
+                "files_created": list(result["files_created"].keys()),
+                "output_mode": "local",
+            })
 
-        commit_file(
-            owner=GITHUB_REPO_OWNER,
-            repo=GITHUB_REPO_NAME,
-            path=readme_path,
-            token=GITHUB_TOKEN,
-            message=f"docs: add README for {account_name}",
-            content=readme_content,
-        )
+        else:
+            # Commit to GitHub (original behavior)
+            directory_path = f"{customization_name}-{account_name}"
+            main_tf_path = f"{directory_path}/main.tf"
+            readme_path = f"{directory_path}/README.md"
 
-        main_tf_url = f"https://github.com/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/blob/main/{main_tf_path}"
-        readme_url = f"https://github.com/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/blob/main/{readme_path}"
+            commit_file(
+                owner=GITHUB_REPO_OWNER,
+                repo=GITHUB_REPO_NAME,
+                path=main_tf_path,
+                token=GITHUB_TOKEN,
+                message=f"feat: add Terraform config for {account_name}",
+                content=main_tf_content,
+            )
 
-        return _build_response(event, 200, {
-            "message": f"main.tf and README.md successfully created in {directory_path}/",
-            "main_tf_url": main_tf_url,
-            "readme_url": readme_url,
-        })
+            commit_file(
+                owner=GITHUB_REPO_OWNER,
+                repo=GITHUB_REPO_NAME,
+                path=readme_path,
+                token=GITHUB_TOKEN,
+                message=f"docs: add README for {account_name}",
+                content=readme_content,
+            )
+
+            main_tf_url = f"https://github.com/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/blob/main/{main_tf_path}"
+            readme_url = f"https://github.com/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/blob/main/{readme_path}"
+
+            return _build_response(event, 200, {
+                "message": f"main.tf and README.md successfully created in {directory_path}/",
+                "main_tf_url": main_tf_url,
+                "readme_url": readme_url,
+                "output_mode": "github",
+            })
 
     except KeyError as e:
         logger.error("Missing required property: %s", e)
