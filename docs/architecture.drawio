@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="architecture" name="LZA Terraform Generator">
-    <mxGraphModel dx="900" dy="680" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="920" pageHeight="700" math="0" shadow="0">
+    <mxGraphModel dx="900" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="920" pageHeight="760" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -41,21 +41,33 @@
           <mxGeometry x="40" y="155" width="55" height="55" as="geometry" />
         </mxCell>
         <mxCell id="data_pipeline" value="Data Pipeline (offline)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontSize=10;fontColor=#666666;container=1;dropTarget=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="520" width="380" height="130" as="geometry" />
+          <mxGeometry x="30" y="520" width="380" height="190" as="geometry" />
         </mxCell>
         <mxCell id="lza_config" value="LZA Config&lt;br&gt;(YAML)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="data_pipeline">
-          <mxGeometry x="20" y="40" width="48" height="48" as="geometry" />
+          <mxGeometry x="20" y="30" width="48" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="extractor" value="extract_lza_config.py&lt;br&gt;extract_tf_registry.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
-          <mxGeometry x="150" y="38" width="48" height="48" as="geometry" />
+        <mxCell id="extractor_lza" value="extract_lza_config.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
+          <mxGeometry x="130" y="32" width="44" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="tf_modules" value="TF Modules&lt;br&gt;(Registry/Manifest)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="data_pipeline">
+          <mxGeometry x="20" y="105" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="extractor_tf" value="extract_tf_registry.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
+          <mxGeometry x="130" y="107" width="44" height="44" as="geometry" />
         </mxCell>
         <mxCell id="sync" value="sync-kb.sh" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
-          <mxGeometry x="290" y="40" width="48" height="48" as="geometry" />
+          <mxGeometry x="280" y="68" width="48" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="ep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="lza_config" target="extractor" parent="data_pipeline">
+        <mxCell id="ep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="lza_config" target="extractor_lza" parent="data_pipeline">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="extractor" target="sync" parent="data_pipeline">
+        <mxCell id="ep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="extractor_lza" target="sync" parent="data_pipeline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep3a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="tf_modules" target="extractor_tf" parent="data_pipeline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep3b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="extractor_tf" target="sync" parent="data_pipeline">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ep3" value="S3 + Ingest" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="sync" target="s3" parent="1">
