@@ -4,6 +4,7 @@ Bedrock model invocation using the Messages API (Claude 3.5+).
 
 import json
 import logging
+from pathlib import Path
 
 import boto3
 from botocore.exceptions import ClientError
@@ -22,6 +23,52 @@ def _get_client(region: str):
         _bedrock_runtime = boto3.client("bedrock-runtime", region_name=region, config=config)
     return _bedrock_runtime
 
+
+
+def _load_prompt(prompt_file: Path) -> tuple[str, str]:
+    """
+    Load system prompt and user prompt template from a markdown file.
+
+    Expected format in the .md file:
+        ## System Prompt
+        ```
+        <system prompt content>
+        ```
+
+        ## User Prompt
+        ```
+        <user prompt template with {services} and {module_definitions} placeholders>
+        ```
+    """
+    if not prompt_file.exists():
+        raise FileNotFoundError(f"Prompt file not found: {prompt_file}")
+
+    content = prompt_file.read_text(encoding="utf-8")
+
+    # Extract system prompt (between first ``` pair after "## System Prompt")
+    system_prompt = _extract_code_block(content, "## System Prompt")
+    user_prompt = _extract_code_block(content, "## User Prompt")
+
+    if not system_prompt or not user_prompt:
+        raise ValueError(f"Could not parse system/user prompts from {prompt_file}")
+
+    return system_prompt, user_prompt
+
+
+def _extract_code_block(content: str, section_header: str) -> str:
+    """Extract the content of the first ``` code block after a section header."""
+    import re
+    # Find the section
+    section_idx = content.find(section_header)
+    if section_idx == -1:
+        return ""
+
+    # Find the first ``` block after the section header
+    remaining = content[section_idx:]
+    match = re.search(r'```\n?(.*?)```', remaining, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return ""
 
 def _invoke_model(prompt: str, system_prompt: str, model_id: str, region: str) -> str:
     """Invoke a Bedrock model using the Messages API."""
@@ -59,48 +106,14 @@ def _invoke_model(prompt: str, system_prompt: str, model_id: str, region: str) -
 
 def generate_terraform(services: list[str], module_definitions: str, model_id: str, region: str) -> str:
     """Generate Terraform configuration for the requested AWS services."""
-    system_prompt = """You are a senior Terraform engineer specializing in AWS Landing Zone Accelerator (LZA) configurations.
-You generate production-ready Terraform code that is FULLY ALIGNED with the organization's deployed LZA environment.
+    # Load prompts from external files
+    prompts_dir = Path(__file__).parent.parent.parent / "prompts"
+    system_prompt, user_prompt_template = _load_prompt(prompts_dir / "v1.md")
 
-CRITICAL RULES:
-- NEVER use placeholder values. Use ONLY real values from the organization context provided.
-- Default region is ALWAYS ca-central-1 (the organization's home region). NEVER use us-east-1.
-- Use the REAL CIDR blocks from the network topology (10.x.x.x ranges provided in context).
-- Use the REAL subnet tier names: Web, App, Data, Mgmt, TgwAttach.
-- All resources MUST be encrypted (EBS, S3, RDS) — this is enforced by SCPs.
-- EC2 instances MUST use IMDSv2 (enforced by Config rules).
-- S3 buckets MUST block public access and enforce HTTPS (enforced by SCPs).
-- RDS MUST use storage encryption (enforced by SCPs).
-- Reference existing KMS keys, S3 buckets, and IAM policies from the organization when available.
-- Include the organization's mandatory tags: ClientName, ClientProjectName, CostCenter, MaintainersTeam.
-- Use the organization's module sources when provided. Otherwise use standard resource blocks.
-- NEVER create VPCs in Sandbox accounts (blocked by SCP). Reference shared VPC subnets instead.
-- Stay within the allowed regions (ca-central-1 primary, us-east-1 for global services only).
-
-OUTPUT FORMAT:
-- Output ONLY valid HCL code. No markdown fences, no explanations.
-- Start with terraform {} block with required providers.
-- Include variables with REAL default values from the organization context.
-- Add comments explaining architectural decisions."""
-
-    prompt = f"""Generate a complete Terraform configuration for these AWS services: {', '.join(services)}
-
-ORGANIZATION CONTEXT (from deployed LZA configuration — use these REAL values):
-{module_definitions}
-
-REQUIREMENTS:
-1. Region: ca-central-1 (hardcode as default, this is the org's home region)
-2. Use the REAL CIDR blocks from the context above for any network references
-3. Use data sources to reference existing shared VPCs/subnets when in Sandbox accounts
-4. All encryption enabled by default (SCP-enforced — deployment will fail without it)
-5. Include the organization's mandatory tags in the provider default_tags block:
-   - ClientName = "Alithya"
-   - MaintainersTeam = "IO"
-   - ManagedBy = "Terraform"
-   - Environment = var.environment
-6. Use organization module sources if provided in the context. Otherwise create resource blocks.
-7. Include outputs for important resource attributes (ARNs, endpoints, IDs)
-8. Add variables with sensible defaults derived from the organization context"""
+    prompt = user_prompt_template.format(
+        services=', '.join(services),
+        module_definitions=module_definitions,
+    )
 
     return _invoke_model(prompt, system_prompt, model_id, region)
 
