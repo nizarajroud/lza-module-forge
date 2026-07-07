@@ -1,0 +1,175 @@
+{
+  "documentType": "network-topology",
+  "extractedFrom": "network-config.yaml",
+  "extractedAt": "2026-07-07T09:27:24.374100+00:00",
+  "vpcs": [
+    {
+      "name": "Endpoint",
+      "account": "Network",
+      "region": "ca-central-1",
+      "cidrs": [
+        "10.7.0.0/22"
+      ],
+      "subnets": [],
+      "vpcEndpoints": [
+        "s3",
+        "dynamodb",
+        "ec2",
+        "ec2messages",
+        "ssm",
+        "ssmmessages",
+        "kms",
+        "logs",
+        "cloudformation",
+        "secretsmanager",
+        "monitoring",
+        "ecr.api",
+        "ecr.dkr"
+      ],
+      "transitGatewayAttached": true
+    },
+    {
+      "name": "Perimeter",
+      "account": "Perimeter",
+      "region": "ca-central-1",
+      "cidrs": [
+        "10.7.4.0/22"
+      ],
+      "subnets": [],
+      "vpcEndpoints": [
+        "s3",
+        "dynamodb"
+      ],
+      "transitGatewayAttached": true
+    },
+    {
+      "name": "Dev",
+      "account": "Network",
+      "region": "ca-central-1",
+      "cidrs": [
+        "10.2.0.0/16"
+      ],
+      "subnets": [],
+      "vpcEndpoints": [
+        "s3",
+        "dynamodb"
+      ],
+      "transitGatewayAttached": true
+    },
+    {
+      "name": "Central",
+      "account": "Network",
+      "region": "ca-central-1",
+      "cidrs": [
+        "10.1.0.0/16"
+      ],
+      "subnets": [],
+      "vpcEndpoints": [
+        "s3",
+        "dynamodb"
+      ],
+      "transitGatewayAttached": true
+    },
+    {
+      "name": "Test",
+      "account": "Network",
+      "region": "ca-central-1",
+      "cidrs": [
+        "10.3.0.0/16"
+      ],
+      "subnets": [],
+      "vpcEndpoints": [
+        "s3",
+        "dynamodb"
+      ],
+      "transitGatewayAttached": true
+    },
+    {
+      "name": "Prod",
+      "account": "Network",
+      "region": "ca-central-1",
+      "cidrs": [
+        "10.4.0.0/16"
+      ],
+      "subnets": [],
+      "vpcEndpoints": [
+        "s3",
+        "dynamodb"
+      ],
+      "transitGatewayAttached": true
+    }
+  ],
+  "transitGateways": [
+    {
+      "name": "Network-Main",
+      "account": "Network",
+      "region": "ca-central-1",
+      "asn": 65521,
+      "routeTables": [
+        "Network-Main-Core",
+        "Network-Main-Segregated",
+        "Network-Main-Shared",
+        "Network-Main-Standalone"
+      ]
+    }
+  ],
+  "resolvedCidrs": {
+    "sandboxCidr": "10.0.0.0/8",
+    "VpcEndpointCidr": "10.7.0.0/22",
+    "Subnet-Endpoint-A": "10.7.0.0/24",
+    "Subnet-Endpoint-B": "10.7.1.0/24",
+    "Subnet-EndpointTgwAttach-A": "10.7.3.208/28",
+    "Subnet-EndpointTgwAttach-B": "10.7.3.224/28",
+    "VpcPerimeterCidr": "10.7.4.0/22",
+    "Subnet-Perimeter-A": "10.7.4.0/24",
+    "Subnet-Perimeter-B": "10.7.5.0/24",
+    "Subnet-Perimeter-Nat-A": "10.7.7.176/28",
+    "Subnet-Perimeter-Nat-B": "10.7.7.192/28",
+    "Subnet-Perimeter-Tgw-A": "10.7.7.208/28",
+    "Subnet-Perimeter-Tgw-B": "10.7.7.224/28",
+    "VpcDevCidr": "10.2.0.0/16",
+    "Subnet-Dev-Web-A": "10.2.16.0/20",
+    "Subnet-Dev-Web-B": "10.2.32.0/20",
+    "Subnet-Dev-App-A": "10.2.64.0/19",
+    "Subnet-Dev-App-B": "10.2.96.0/19",
+    "Subnet-Dev-Data-A": "10.2.160.0/20",
+    "Subnet-Dev-Data-B": "10.2.176.0/20",
+    "Subnet-Dev-Mgmt-A": "10.2.8.0/21",
+    "Subnet-Dev-Mgmt-B": "10.2.208.0/21",
+    "Subnet-Dev-MainTgwAttach-A": "10.2.0.0/27",
+    "Subnet-Dev-MainTgwAttach-B": "10.2.0.32/27",
+    "VpcTestCidr": "10.3.0.0/16",
+    "Subnet-Test-Web-A": "10.3.16.0/20",
+    "Subnet-Test-Web-B": "10.3.32.0/20",
+    "Subnet-Test-App-A": "10.3.64.0/19",
+    "Subnet-Test-App-B": "10.3.96.0/19",
+    "Subnet-Test-Data-A": "10.3.160.0/20",
+    "Subnet-Test-Data-B": "10.3.176.0/20",
+    "Subnet-Test-Mgmt-A": "10.3.8.0/21",
+    "Subnet-Test-Mgmt-B": "10.3.208.0/21",
+    "Subnet-Test-MainTgwAttach-A": "10.3.0.0/27",
+    "Subnet-Test-MainTgwAttach-B": "10.3.0.32/27",
+    "VpcProdCidr": "10.4.0.0/16",
+    "Subnet-Prod-Web-A": "10.4.16.0/20",
+    "Subnet-Prod-Web-B": "10.4.32.0/20",
+    "Subnet-Prod-App-A": "10.4.64.0/19",
+    "Subnet-Prod-App-B": "10.4.96.0/19",
+    "Subnet-Prod-Data-A": "10.4.160.0/20",
+    "Subnet-Prod-Data-B": "10.4.176.0/20",
+    "Subnet-Prod-Mgmt-A": "10.4.8.0/21",
+    "Subnet-Prod-Mgmt-B": "10.4.208.0/21",
+    "Subnet-Prod-MainTgwAttach-A": "10.4.0.0/27",
+    "Subnet-Prod-MainTgwAttach-B": "10.4.0.32/27",
+    "VpcCentralCidr": "10.1.0.0/16",
+    "Subnet-Central-Web-A": "10.1.16.0/20",
+    "Subnet-Central-Web-B": "10.1.32.0/20",
+    "Subnet-Central-App-A": "10.1.64.0/19",
+    "Subnet-Central-App-B": "10.1.96.0/19",
+    "Subnet-Central-Data-A": "10.1.160.0/20",
+    "Subnet-Central-Data-B": "10.1.176.0/20",
+    "Subnet-Central-Mgmt-A": "10.1.8.0/21",
+    "Subnet-Central-Mgmt-B": "10.1.208.0/21",
+    "Subnet-Central-MainTgwAttach-A": "10.1.0.0/27",
+    "Subnet-Central-MainTgwAttach-B": "10.1.0.32/27"
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "documentType": "organization-structure",
+  "extractedFrom": "accounts-config.yaml + organization-config.yaml",
+  "extractedAt": "2026-07-07T09:27:24.374053+00:00",
+  "homeRegion": "ca-central-1",
+  "acceleratorPrefix": "AWSAccelerator",
+  "organizationalUnits": [
+    {
+      "name": "Central",
+      "path": "Root/Central",
+      "accounts": [
+        {
+          "name": "PlatformServices",
+          "email": "ca-projet-aws-sandbox+platformservices@alithya.com",
+          "description": "This account is used for centralized Internal Developement Platform Services",
+          "type": "workload"
+        }
+      ],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-0",
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Sensitive-Part-1"
+      ]
+    },
+    {
+      "name": "Dev",
+      "path": "Root/Dev",
+      "accounts": [],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-0",
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Sensitive-Part-1"
+      ]
+    },
+    {
+      "name": "Dev/Alithya",
+      "path": "Root/Dev/Alithya",
+      "accounts": [],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Dev/Alithya/CETI",
+      "path": "Root/Dev/Alithya/CETI",
+      "accounts": [
+        {
+          "name": "RapidCaptureDev",
+          "email": "ca-projet-aws-sandbox+rapid.capture@alithya.com",
+          "description": "This Sandbox account is dedicated to RapidCapture DevOps",
+          "type": "workload"
+        },
+        {
+          "name": "SplunklabDev",
+          "email": "ca-projet-aws-sandbox+anthony.starck@alithya.com",
+          "description": "This Sandbox account is dedicated to Anthony Starck",
+          "type": "workload"
+        }
+      ],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Dev/Videotron",
+      "path": "Root/Dev/Videotron",
+      "accounts": [],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Dev/Videotron/BluAge",
+      "path": "Root/Dev/Videotron/BluAge",
+      "accounts": [],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Infrastructure",
+      "path": "Root/Infrastructure",
+      "accounts": [
+        {
+          "name": "Network",
+          "email": "ca-projet-aws-sandbox+infrastructure.network@alithya.com",
+          "description": "The Network account",
+          "type": "workload"
+        },
+        {
+          "name": "Operations",
+          "email": "ca-projet-aws-sandbox+infrastructure.operations@alithya.com",
+          "description": "This Account is used for centralized IT Operational resources (MAD, rsyslog, ITSM, etc.). Do not change the name field for this mandatory account. Note, the account name key does not need to match the AWS account name.",
+          "type": "workload"
+        },
+        {
+          "name": "Perimeter",
+          "email": "ca-projet-aws-sandbox+infrastructure.perimeter@alithya.com",
+          "description": "Used for Internet facing, IaaS-based ingress/egress security services",
+          "type": "workload"
+        }
+      ],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Sensitive-Part-1",
+        "AWSAccelerator-Guardrails-Part-0-Core"
+      ]
+    },
+    {
+      "name": "Prod",
+      "path": "Root/Prod",
+      "accounts": [],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-0",
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Sensitive-Part-1"
+      ]
+    },
+    {
+      "name": "Prod/Alithya",
+      "path": "Root/Prod/Alithya",
+      "accounts": [],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Prod/Alithya/CETI",
+      "path": "Root/Prod/Alithya/CETI",
+      "accounts": [],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Sandbox",
+      "path": "Root/Sandbox",
+      "accounts": [],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-0",
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Sandbox"
+      ]
+    },
+    {
+      "name": "Sandbox/Alithya",
+      "path": "Root/Sandbox/Alithya",
+      "accounts": [],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Sandbox/Alithya/CETI",
+      "path": "Root/Sandbox/Alithya/CETI",
+      "accounts": [
+        {
+          "name": "SandboxFlorianJudith",
+          "email": "florian.judith@alithya.com",
+          "description": "This Sandbox account is dedicated to Florian JUDITH (IO/AWS)",
+          "type": "workload"
+        },
+        {
+          "name": "SandboxMartinLignac",
+          "email": "ca-projet-aws-sandbox+martin.lignac@alithya.com",
+          "description": "This Sandbox account is dedicated to Martin Lignac",
+          "type": "workload"
+        },
+        {
+          "name": "SandboxVincentGiroux",
+          "email": "ca-projet-aws-sandbox+vincent.giroux@alithya.com",
+          "description": "This Sandbox account is dedicated to Vincent Giroux",
+          "type": "workload"
+        },
+        {
+          "name": "SandboxSamiHachmoud",
+          "email": "ca-projet-aws-sandbox+sami.hachmoud@alithya.com",
+          "description": "This Sandbox account is dedicated to Sami Hachmoud",
+          "type": "workload"
+        },
+        {
+          "name": "SandboxNizarAjroud",
+          "email": "ca-projet-aws-sandbox+nizar.ajroud@alithya.com",
+          "description": "This Sandbox account is dedicated to Nizar Ajroud",
+          "type": "workload"
+        },
+        {
+          "name": "SandboxAlainBellemare",
+          "email": "ca-projet-aws-sandbox+alain.bellemare@alithya.com",
+          "description": "This Sandbox account is dedicated to Alain Bellemare",
+          "type": "workload"
+        },
+        {
+          "name": "SandboxCentreExpertiseInnovation",
+          "email": "centre-expertise-innovation@alithya.com",
+          "description": "This Sandbox account is dedicated to centre-expertise-innovation",
+          "type": "workload"
+        }
+      ],
+      "appliedSCPs": []
+    },
+    {
+      "name": "Security",
+      "path": "Root/Security",
+      "accounts": [
+        {
+          "name": "LogArchive",
+          "email": "ca-projet-aws-sandbox+archive.log@alithya.com",
+          "description": "The log archive account. Do not change the name field for this mandatory account. Note, the account name key does not need to match the AWS account name.",
+          "type": "mandatory"
+        },
+        {
+          "name": "Audit",
+          "email": "ca-projet-aws-sandbox+security.audit@alithya.com",
+          "description": "The security audit account (also referred to as the audit account). Do not change the name field for this mandatory account. Note, the account name key does not need to match the AWS account name.",
+          "type": "mandatory"
+        }
+      ],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Part-0-Core"
+      ]
+    },
+    {
+      "name": "Test",
+      "path": "Root/Test",
+      "accounts": [],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-0",
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Sensitive-Part-1"
+      ]
+    },
+    {
+      "name": "UnClass",
+      "path": "Root/UnClass",
+      "accounts": [],
+      "appliedSCPs": [
+        "AWSAccelerator-Guardrails-Part-0",
+        "AWSAccelerator-Guardrails-Part-1",
+        "AWSAccelerator-Guardrails-Unclass"
+      ]
+    }
+  ],
+  "totalAccounts": 15
+}

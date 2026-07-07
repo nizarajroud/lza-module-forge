@@ -1,0 +1,447 @@
+{
+  "documentType": "iam-resources",
+  "extractedFrom": "iam-config.yaml + iam-policies/",
+  "extractedAt": "2026-07-07T09:27:24.385601+00:00",
+  "identityCenter": {
+    "delegatedAdmin": "Operations",
+    "permissionSets": [
+      {
+        "name": "VideotronS3Writer",
+        "awsManagedPolicies": [
+          "AmazonS3ReadOnlyAccess"
+        ],
+        "customerManagedPolicies": [
+          "AlithyaS3EdgeWriterAccess"
+        ]
+      },
+      {
+        "name": "AlithyaBedrockFullAccess",
+        "awsManagedPolicies": [],
+        "customerManagedPolicies": [
+          "AlithyaBedrockFullAccess"
+        ]
+      },
+      {
+        "name": "AlithyaEksFullAccess",
+        "awsManagedPolicies": [
+          "PowerUserAccess"
+        ],
+        "customerManagedPolicies": [
+          "AlithyaEksFullAccess"
+        ]
+      },
+      {
+        "name": "AlithyaEksReadOnlyAccess",
+        "awsManagedPolicies": [
+          "job-function/ViewOnlyAccess"
+        ],
+        "customerManagedPolicies": [
+          "AlithyaEksReadOnlyAccess"
+        ]
+      }
+    ],
+    "assignments": [
+      {
+        "name": "VideotronContribution",
+        "permissionSet": "VideotronS3Writer",
+        "principals": [
+          {
+            "type": "GROUP",
+            "name": "VideotronContributors"
+          }
+        ],
+        "targets": {
+          "organizationalUnits": [
+            "Dev/Videotron",
+            "Dev/Videotron/BluAge"
+          ]
+        }
+      },
+      {
+        "name": "AlithyaBedrockMaintainers",
+        "permissionSet": "AlithyaBedrockFullAccess",
+        "principals": [
+          {
+            "type": "GROUP",
+            "name": "AlithyaBedrockMaintainers"
+          }
+        ],
+        "targets": {
+          "accounts": [
+            "Operations"
+          ]
+        }
+      },
+      {
+        "name": "AlithyaEksAdministrators",
+        "permissionSet": "AlithyaEksFullAccess",
+        "principals": [
+          {
+            "type": "GROUP",
+            "name": "AlithyaEksAdministrators"
+          }
+        ],
+        "targets": {
+          "organizationalUnits": [
+            "Sandbox/Alithya/CETI"
+          ],
+          "accounts": [
+            "PlatformServices"
+          ]
+        }
+      },
+      {
+        "name": "AlithyaEksDevelopers",
+        "permissionSet": "AlithyaEksReadOnlyAccess",
+        "principals": [
+          {
+            "type": "GROUP",
+            "name": "AlithyaEksDevelopers"
+          }
+        ],
+        "targets": {
+          "organizationalUnits": [
+            "Sandbox/Alithya/CETI"
+          ],
+          "accounts": [
+            "PlatformServices"
+          ]
+        }
+      },
+      {
+        "name": "RapidCaptureEksAdministrators",
+        "permissionSet": "AlithyaEksFullAccess",
+        "principals": [
+          {
+            "type": "GROUP",
+            "name": "RapidCaptureEksAdministrators"
+          }
+        ],
+        "targets": {
+          "organizationalUnits": [
+            "Dev/Alithya/CETI"
+          ]
+        }
+      }
+    ]
+  },
+  "managedPolicies": [
+    {
+      "name": "AWSAccelerator-Default-Boundary-Policy",
+      "policyFile": "iam-policies/boundary-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-Default-SSM-S3-Policy",
+      "policyFile": "iam-policies/ssm-s3-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaBackstagePluginsAccess",
+      "policyFile": "iam-policies/backstage/aws-plugins-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaAtlantisFullAccess",
+      "policyFile": "iam-policies/atlantis/atlantis-full-access-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaGitlabSaasRunnerFullAccess",
+      "policyFile": "iam-policies/gitlab/saas-runner-full-access-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaEksFullAccess",
+      "policyFile": "iam-policies/eks-sso/eks-full-access-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaEksReadOnlyAccess",
+      "policyFile": "iam-policies/eks-sso/eks-readonly-access-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-IAM-User-Boundary-Policy",
+      "policyFile": "iam-policies/iam-user-boundary-policy.json",
+      "deployedTo": {
+        "accounts": [
+          "Management"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaBackstageEntityProviderAccess",
+      "policyFile": "iam-policies/backstage/aws-entity-provider-plugins-policy.json",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaBedrockFullAccess",
+      "policyFile": "iam-policies/genai/amazon-bedrock-full-access-policy.json",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaBackstageAwsHarmonixAccess",
+      "policyFile": "iam-policies/backstage/aws-harmonix-plugins-policy.json",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaGitlabSaasRunnerAccess",
+      "policyFile": "iam-policies/gitlab/gitlab-runner-integration-policy.json",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaBackstageAwsCostInsightsAccess",
+      "policyFile": "iam-policies/backstage/aws-cost-insights-plugins-policy.json",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AlithyaS3EdgeWriterAccess",
+      "policyFile": "iam-policies/s3-edge-writer-policy.json",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Dev/Videotron",
+          "Dev/Videotron/BluAge"
+        ]
+      }
+    }
+  ],
+  "roleSets": [
+    {
+      "name": "EC2-Default-SSM-AD-Role",
+      "policies": {
+        "awsManaged": [
+          "AmazonSSMManagedInstanceCore",
+          "AmazonSSMDirectoryServiceAccess",
+          "CloudWatchAgentServerPolicy",
+          "AmazonInspector2ManagedCispolicy"
+        ],
+        "customerManaged": [
+          "AWSAccelerator-Default-SSM-S3-Policy"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-RDGW-Role",
+      "policies": {
+        "awsManaged": [
+          "AmazonSSMManagedInstanceCore",
+          "AmazonSSMDirectoryServiceAccess",
+          "CloudWatchAgentServerPolicy",
+          "AmazonInspector2ManagedCispolicy"
+        ],
+        "customerManaged": [
+          "AWSAccelerator-Default-SSM-S3-Policy"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-Rsyslog-Role",
+      "policies": {
+        "awsManaged": [
+          "AmazonSSMManagedInstanceCore",
+          "CloudWatchAgentServerPolicy",
+          "AmazonS3ReadOnlyAccess"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-AlithyaCsnaAdmins-Role",
+      "policies": {
+        "awsManaged": [
+          "AdministratorAccess"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-AlithyaGitlabSaasRunner-Role",
+      "policies": {
+        "customerManaged": [
+          "AlithyaGitlabSaasRunnerFullAccess"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-AlithyaAtlantis-Role",
+      "policies": {
+        "customerManaged": [
+          "AlithyaAtlantisFullAccess"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Root"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-Alithya-S3-Edge-Role",
+      "policies": {
+        "awsManaged": [
+          "AmazonS3ReadOnlyAccess"
+        ],
+        "customerManaged": [
+          "AlithyaS3EdgeWriterAccess",
+          "AWSAccelerator-Default-SSM-S3-Policy"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "organizationalUnits": [
+          "Dev/Videotron",
+          "Dev/Videotron/BluAge"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-GitLab-SaasRunner-Organization-Reader-Role",
+      "policies": {
+        "customerManaged": [
+          "AlithyaGitlabSaasRunnerAccess"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-Alithya-Backstage-Integration-Role",
+      "policies": {
+        "awsManaged": [
+          "AmazonS3ReadOnlyAccess"
+        ],
+        "customerManaged": [
+          "AlithyaBackstageEntityProviderAccess",
+          "AlithyaBedrockFullAccess",
+          "AlithyaBackstageAwsHarmonixAccess",
+          "AlithyaBackstageAwsCostInsightsAccess",
+          "AlithyaBackstagePluginsAccess"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "accounts": [
+          "Operations"
+        ]
+      }
+    },
+    {
+      "name": "AWSAccelerator-Alithya-Backstage-Billing-Role",
+      "policies": {
+        "awsManaged": [
+          "AWSBillingReadOnlyAccess"
+        ],
+        "customerManaged": [
+          "AlithyaBackstagePluginsAccess"
+        ]
+      },
+      "boundaryPolicy": "",
+      "deployedTo": {
+        "accounts": [
+          "Management"
+        ]
+      }
+    },
+    {
+      "name": "Firewall-Role",
+      "policies": {
+        "awsManaged": [
+          "AmazonSSMManagedInstanceCore",
+          "CloudWatchAgentServerPolicy",
+          "AmazonS3ReadOnlyAccess"
+        ],
+        "customerManaged": [
+          "AWSAccelerator-Default-SSM-S3-Policy"
+        ]
+      },
+      "boundaryPolicy": "AWSAccelerator-Default-Boundary-Policy",
+      "deployedTo": {
+        "accounts": [
+          "Perimeter"
+        ]
+      }
+    }
+  ]
+}

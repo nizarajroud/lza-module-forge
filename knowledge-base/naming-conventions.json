@@ -1,0 +1,57 @@
+{
+  "documentType": "naming-conventions",
+  "extractedFrom": "pattern analysis across all config files",
+  "extractedAt": "2026-07-07T09:27:24.385630+00:00",
+  "patterns": {
+    "accounts": "Purpose + UserLastName for sandboxes, Purpose for workloads",
+    "vpcs": "{Environment}-VPC (e.g., Central, Endpoint, Perimeter, Dev, Test, Prod)",
+    "subnets": "{VpcName}-{Tier}-{AZ} (e.g., Subnet-Dev-App-A, Subnet-Prod-Data-B)",
+    "tiers": [
+      "Web",
+      "App",
+      "Data",
+      "Mgmt",
+      "TgwAttach",
+      "Nat"
+    ],
+    "scps": "AWSAccelerator-Guardrails-{Scope}",
+    "iamPolicies": "{Org}{Service}{Scope}Access (e.g., AlithyaEksFullAccess)"
+  },
+  "mandatoryTags": {
+    "clientName": "Alithya",
+    "clientProjectName": "AWSLandingZoneAccelerator",
+    "finopsCostCenter": "n/a",
+    "maintainersOrgranisationName": "Alithya",
+    "maintainersBusinessUnitName": "CSNA",
+    "maintainersDepartmentName": "CSNA Valorisation de donnees/DSC Data valorization",
+    "maintainersTeamName": "IO"
+  },
+  "regions": {
+    "primary": "ca-central-1",
+    "allowedInSandbox": [
+      "ca-central-1",
+      "us-east-1",
+      "us-east-2",
+      "us-west-1",
+      "us-west-2"
+    ],
+    "otherEnabled": [
+      "us-east-1",
+      "us-east-2"
+    ]
+  },
+  "acceleratorPrefix": "AWSAccelerator",
+  "organization": "Alithya",
+  "accountNamingExamples": [
+    "Network",
+    "Operations",
+    "Perimeter",
+    "PlatformServices",
+    "SandboxFlorianJudith",
+    "SandboxMartinLignac",
+    "SandboxVincentGiroux",
+    "SandboxSamiHachmoud",
+    "SandboxNizarAjroud",
+    "RapidCaptureDev"
+  ]
+}

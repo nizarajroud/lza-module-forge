@@ -1,0 +1,174 @@
+{
+  "documentType": "existing-deployments",
+  "extractedFrom": "customizations-config.yaml",
+  "extractedAt": "2026-07-07T09:27:24.385622+00:00",
+  "cloudFormationStacks": [
+    {
+      "name": "AlithyaDefaultTagsParameters",
+      "description": "CloudFormation Stack deployed to accounts in the Infrastructure OU.",
+      "template": "customizations/ssm/00-finops-tags.yaml",
+      "targets": {
+        "organizationalUnits": [
+          "Infrastructure",
+          "Security",
+          "Sandbox",
+          "Sandbox/Alithya",
+          "Sandbox/Alithya/CETI"
+        ],
+        "accounts": []
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {
+        "clientName": "Alithya",
+        "clientProjectName": "AWSLandingZoneAccelerator",
+        "finopsCostCenter": "n/a",
+        "maintainersOrgranisationName": "Alithya",
+        "maintainersBusinessUnitName": "CSNA",
+        "maintainersDepartmentName": "CSNA Valorisation de donnees/DSC Data valorization",
+        "maintainersTeamName": "IO"
+      }
+    },
+    {
+      "name": "AlithyaDefaultDnsZones",
+      "description": "Stack containing Root domain.",
+      "template": "customizations/route53/00-com.alithya.cna.yaml",
+      "targets": {
+        "organizationalUnits": [],
+        "accounts": [
+          "Network"
+        ]
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "AlithyaIODnsZones",
+      "description": "Stack containing the alithya.io Root domain.",
+      "template": "customizations/route53/01-io.alithya.yaml",
+      "targets": {
+        "organizationalUnits": [],
+        "accounts": [
+          "Network"
+        ]
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "AlithyaCeiSandboxDnsZones",
+      "description": "Stack containing the .ceisbx0.alithya.io Root domain.",
+      "template": "customizations/route53/01-io.alithya.ceisbx0.yaml",
+      "targets": {
+        "organizationalUnits": [],
+        "accounts": [
+          "SandboxCentreExpertiseInnovation"
+        ]
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "AlithyaAdminKeys",
+      "description": "CloudFormation Stack deployed to accounts in Infrastructure, Workload, and Sandbox OUs, to provision administrators KMS keys.",
+      "template": "customizations/kms/00-admin-keys.yaml",
+      "targets": {
+        "organizationalUnits": [
+          "Central",
+          "Dev/Alithya/CETI",
+          "Sandbox/Alithya/CETI",
+          "Infrastructure"
+        ],
+        "accounts": []
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "AlithyaTfStateKeys",
+      "description": "CloudFormation Stack deployed to accounts in Infrastructure, Workload, and Sandbox OUs, to provision administrators KMS keys.",
+      "template": "customizations/kms/01-tfstate-keys.yaml",
+      "targets": {
+        "organizationalUnits": [
+          "Central",
+          "Dev/Alithya/CETI",
+          "Sandbox/Alithya/CETI",
+          "Infrastructure",
+          "Central"
+        ],
+        "accounts": []
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {
+        "AtlantisRoleName": "AWSAccelerator-AlithyaAtlantis-Role"
+      }
+    },
+    {
+      "name": "AlithyaAdminBuckets",
+      "description": "CloudFormation Stack deployed to accounts in Infrastructure, Workload, and Sandbox OUs, to provision administrators S3 buckets",
+      "template": "customizations/s3/00-admin-buckets.yaml",
+      "targets": {
+        "organizationalUnits": [
+          "Central",
+          "Dev/Alithya/CETI",
+          "Sandbox/Alithya/CETI",
+          "Infrastructure"
+        ],
+        "accounts": []
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "AlithyaTfStateBuckets",
+      "description": "CloudFormation Stack deployed to accounts in Infrastructure, Workload, and Sandbox OUs, to provision administrators S3 buckets",
+      "template": "customizations/s3/01-tfstate-buckets.yaml",
+      "targets": {
+        "organizationalUnits": [
+          "Central",
+          "Dev/Alithya/CETI",
+          "Sandbox/Alithya/CETI",
+          "Infrastructure"
+        ],
+        "accounts": []
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {
+        "AtlantisRoleName": "AWSAccelerator-AlithyaAtlantis-Role"
+      }
+    },
+    {
+      "name": "AWSAccelerator-AlbIPForwardingStack",
+      "description": "ALB Lambda Forwarder",
+      "template": "customizations/AlbIpForwardingStack.template.json",
+      "targets": {
+        "organizationalUnits": [],
+        "accounts": [
+          "Perimeter"
+        ]
+      },
+      "regions": [
+        "ca-central-1"
+      ],
+      "parameters": {
+        "acceleratorPrefix": "AWSAccelerator",
+        "vpcName": "Perimeter"
+      }
+    }
+  ]
+}
