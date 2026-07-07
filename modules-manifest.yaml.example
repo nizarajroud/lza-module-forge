@@ -1,0 +1,167 @@
+# Terraform Modules Manifest — Example
+#
+# Use this file if your organization doesn't have a registry API (Terraform Cloud/GitLab).
+# List your approved modules here, and the extractor will produce the KB-ready JSON.
+#
+# Usage:
+#   python extract_tf_registry.py --source manifest --manifest-file modules-manifest.yaml
+#
+# Each module should include:
+#   - name: short identifier (used as module block name in generated TF)
+#   - source: full Terraform source path (git::, s3::, registry, etc.)
+#   - version: latest approved version
+#   - required_parameters: inputs that MUST be provided
+#   - optional_parameters: inputs with defaults
+#   - dependencies: other modules this depends on
+#   - best_practices: guidance for Claude when using this module
+#   - security_notes: security considerations
+#   - outputs: what the module exports (for cross-module references)
+
+modules:
+  - name: vpc
+    source: "git::https://gitlab.example.com/terraform-modules/vpc.git?ref=v2.3.0"
+    description: "Creates a VPC with standard subnet tiers (Web, App, Data, Mgmt, TgwAttach)"
+    version: "2.3.0"
+    required_parameters:
+      - cidr_block
+      - environment
+      - project_name
+    optional_parameters:
+      - enable_flow_logs
+      - enable_dns_hostnames
+      - subnet_tiers
+    dependencies: []
+    best_practices: |
+      Always use private subnets for workloads.
+      Attach to Transit Gateway via TgwAttach subnets.
+      Enable VPC flow logs for audit compliance.
+    security_notes: |
+      Do not create public subnets unless specifically approved.
+      Use NACLs for network segmentation between tiers.
+      VPC endpoints are mandatory for S3 and DynamoDB access.
+    outputs:
+      - vpc_id
+      - private_subnet_ids
+      - public_subnet_ids
+      - tgw_attach_subnet_ids
+
+  - name: eks-cluster
+    source: "git::https://gitlab.example.com/terraform-modules/eks-cluster.git?ref=v3.1.0"
+    description: "Deploys an EKS cluster with managed node groups and IRSA"
+    version: "3.1.0"
+    required_parameters:
+      - cluster_name
+      - vpc_id
+      - subnet_ids
+      - kubernetes_version
+    optional_parameters:
+      - node_instance_types
+      - node_min_size
+      - node_max_size
+      - enable_cluster_autoscaler
+      - enable_container_insights
+    dependencies:
+      - vpc
+    best_practices: |
+      Use managed node groups for simplified patching.
+      Enable IRSA for pod-level IAM (never use node role for app permissions).
+      Deploy in private subnets only.
+    security_notes: |
+      Restrict API server endpoint to private access.
+      Enable envelope encryption with KMS for secrets.
+      Use Calico or VPC CNI network policies.
+    outputs:
+      - cluster_arn
+      - cluster_endpoint
+      - cluster_security_group_id
+      - oidc_provider_arn
+
+  - name: rds-aurora
+    source: "git::https://gitlab.example.com/terraform-modules/rds-aurora.git?ref=v1.8.0"
+    description: "Deploys an Aurora cluster (PostgreSQL or MySQL) with multi-AZ"
+    version: "1.8.0"
+    required_parameters:
+      - cluster_name
+      - engine
+      - vpc_id
+      - subnet_ids
+      - master_username
+    optional_parameters:
+      - engine_version
+      - instance_class
+      - replica_count
+      - backup_retention_period
+      - kms_key_arn
+    dependencies:
+      - vpc
+    best_practices: |
+      Use Aurora PostgreSQL for new workloads (better performance/cost).
+      Enable Performance Insights for query analysis.
+      Set backup retention to minimum 7 days (35 for production).
+    security_notes: |
+      Encryption at rest is mandatory (SCP enforced).
+      Place in Data-tier subnets only.
+      Use IAM database authentication when possible.
+      Never expose to public internet.
+    outputs:
+      - cluster_endpoint
+      - reader_endpoint
+      - cluster_arn
+      - security_group_id
+
+  - name: s3-bucket
+    source: "git::https://gitlab.example.com/terraform-modules/s3-bucket.git?ref=v2.0.1"
+    description: "Creates an S3 bucket with encryption, versioning, and lifecycle policies"
+    version: "2.0.1"
+    required_parameters:
+      - bucket_name
+      - environment
+    optional_parameters:
+      - versioning_enabled
+      - lifecycle_rules
+      - replication_configuration
+      - kms_key_arn
+    dependencies: []
+    best_practices: |
+      Enable versioning for all buckets containing application data.
+      Use lifecycle rules to transition old objects to Glacier.
+      Block all public access (enforced by SCP).
+    security_notes: |
+      Server-side encryption is mandatory (SCP enforced).
+      Enforce HTTPS-only access via bucket policy.
+      Enable access logging for audit buckets.
+    outputs:
+      - bucket_arn
+      - bucket_id
+      - bucket_domain_name
+
+  - name: lambda-function
+    source: "git::https://gitlab.example.com/terraform-modules/lambda-function.git?ref=v1.5.0"
+    description: "Deploys a Lambda function with IAM role, CloudWatch logs, and VPC config"
+    version: "1.5.0"
+    required_parameters:
+      - function_name
+      - handler
+      - runtime
+      - source_path
+    optional_parameters:
+      - memory_size
+      - timeout
+      - vpc_config
+      - environment_variables
+      - layers
+      - reserved_concurrency
+    dependencies: []
+    best_practices: |
+      Use arm64 (Graviton) runtime for cost savings.
+      Set reserved concurrency for critical functions.
+      Use Lambda Powertools for structured logging.
+    security_notes: |
+      Follow least-privilege for the execution role.
+      Never embed secrets in environment variables — use Secrets Manager.
+      Deploy in VPC only if accessing VPC resources.
+    outputs:
+      - function_arn
+      - function_name
+      - invoke_arn
+      - role_arn
