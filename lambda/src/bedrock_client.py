@@ -59,36 +59,56 @@ def _invoke_model(prompt: str, system_prompt: str, model_id: str, region: str) -
 
 def generate_terraform(services: list[str], module_definitions: str, model_id: str, region: str) -> str:
     """Generate Terraform configuration for the requested AWS services."""
-    system_prompt = """You are a senior Terraform engineer specializing in AWS Landing Zone configurations.
-You generate production-ready Terraform code following these principles:
-- Use modules from the organization's registry when available
-- Follow least-privilege IAM policies
-- Enable encryption at rest and in transit by default
-- Include meaningful comments explaining architectural decisions
-- Use variables with sensible defaults for environment-specific values
-- Output valid HCL that passes `terraform validate`"""
+    system_prompt = """You are a senior Terraform engineer specializing in AWS Landing Zone Accelerator (LZA) configurations.
+You generate production-ready Terraform code that is FULLY ALIGNED with the organization's deployed LZA environment.
 
-    prompt = f"""Generate a complete Terraform configuration for the following AWS services: {', '.join(services)}
+CRITICAL RULES:
+- NEVER use placeholder values. Use ONLY real values from the organization context provided.
+- Default region is ALWAYS ca-central-1 (the organization's home region). NEVER use us-east-1.
+- Use the REAL CIDR blocks from the network topology (10.x.x.x ranges provided in context).
+- Use the REAL subnet tier names: Web, App, Data, Mgmt, TgwAttach.
+- All resources MUST be encrypted (EBS, S3, RDS) — this is enforced by SCPs.
+- EC2 instances MUST use IMDSv2 (enforced by Config rules).
+- S3 buckets MUST block public access and enforce HTTPS (enforced by SCPs).
+- RDS MUST use storage encryption (enforced by SCPs).
+- Reference existing KMS keys, S3 buckets, and IAM policies from the organization when available.
+- Include the organization's mandatory tags: ClientName, ClientProjectName, CostCenter, MaintainersTeam.
+- Use the organization's module sources when provided. Otherwise use standard resource blocks.
+- NEVER create VPCs in Sandbox accounts (blocked by SCP). Reference shared VPC subnets instead.
+- Stay within the allowed regions (ca-central-1 primary, us-east-1 for global services only).
 
-Use these module definitions from our organization's registry:
+OUTPUT FORMAT:
+- Output ONLY valid HCL code. No markdown fences, no explanations.
+- Start with terraform {} block with required providers.
+- Include variables with REAL default values from the organization context.
+- Add comments explaining architectural decisions."""
+
+    prompt = f"""Generate a complete Terraform configuration for these AWS services: {', '.join(services)}
+
+ORGANIZATION CONTEXT (from deployed LZA configuration — use these REAL values):
 {module_definitions}
 
-For any service not covered by the module definitions above, create standard Terraform resource blocks.
-
-Requirements:
-- Include a `versions.tf` block at the top with required providers
-- Use variables for environment-specific values (instance types, CIDR blocks, etc.)
-- Add outputs for important resource attributes (ARNs, endpoints, IDs)
-- Follow security best practices (encryption, least privilege, private subnets)
-- Add comments explaining the architecture and each major resource group"""
+REQUIREMENTS:
+1. Region: ca-central-1 (hardcode as default, this is the org's home region)
+2. Use the REAL CIDR blocks from the context above for any network references
+3. Use data sources to reference existing shared VPCs/subnets when in Sandbox accounts
+4. All encryption enabled by default (SCP-enforced — deployment will fail without it)
+5. Include the organization's mandatory tags in the provider default_tags block:
+   - ClientName = "Alithya"
+   - MaintainersTeam = "IO"
+   - ManagedBy = "Terraform"
+   - Environment = var.environment
+6. Use organization module sources if provided in the context. Otherwise create resource blocks.
+7. Include outputs for important resource attributes (ARNs, endpoints, IDs)
+8. Add variables with sensible defaults derived from the organization context"""
 
     return _invoke_model(prompt, system_prompt, model_id, region)
 
 
 def generate_readme(services: list[str], terraform_code: str, model_id: str, region: str) -> str:
     """Generate a README documenting the Terraform configuration."""
-    system_prompt = """You are a technical writer creating documentation for AWS infrastructure.
-Write clear, actionable README files in Markdown format."""
+    system_prompt = """You are a technical writer creating documentation for AWS infrastructure deployed in a Landing Zone Accelerator environment.
+Write clear, actionable README files in Markdown format. Reference the organization's specific setup (ca-central-1 region, Alithya org conventions)."""
 
     prompt = f"""Generate a detailed README.md for a Terraform configuration that deploys these AWS services: {', '.join(services)}
 
@@ -99,12 +119,13 @@ The Terraform code is:
 
 Include these sections:
 1. **Overview** — What this configuration deploys and the architecture
-2. **Prerequisites** — Required tools, permissions, and setup steps
-3. **Usage** — How to apply the configuration (init, plan, apply)
+2. **Prerequisites** — Required tools, permissions, and setup steps (mention LZA account setup)
+3. **Usage** — How to apply the configuration (init, plan, apply) in ca-central-1
 4. **Variables** — Table of all input variables with descriptions and defaults
 5. **Outputs** — Table of all outputs
-6. **Security** — Security controls implemented (encryption, IAM, network isolation)
+6. **Security** — Security controls implemented (encryption, IAM, network isolation) and how they align with LZA SCPs
 7. **Cost Estimation** — Approximate monthly cost breakdown by service (use on-demand pricing for ca-central-1)
-8. **Well-Architected Review** — How this aligns with AWS Well-Architected pillars"""
+8. **Well-Architected Review** — How this aligns with AWS Well-Architected pillars
+9. **Compliance** — How this configuration satisfies the organization's SCP requirements"""
 
     return _invoke_model(prompt, system_prompt, model_id, region)

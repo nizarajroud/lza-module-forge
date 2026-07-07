@@ -40,9 +40,13 @@ def retrieve_module_definitions(
     client = _get_client(region)
 
     query_text = (
-        f"Retrieve Terraform module definitions, sources, required parameters, "
-        f"dependencies, and security best practices for these AWS services: "
-        f"{', '.join(services)}"
+        f"Retrieve the organization context for generating Terraform code: "
+        f"1) Network topology with real CIDR blocks and subnet names for these services: {', '.join(services)}. "
+        f"2) Security constraints and SCP rules that apply to these services. "
+        f"3) Approved Terraform module sources. "
+        f"4) Naming conventions and mandatory tags. "
+        f"5) Existing deployed resources that should not be duplicated. "
+        f"6) IAM policies and permission boundaries available."
     )
 
     # Use Claude 3 Sonnet directly for KB queries — faster than cross-region inference profiles
