@@ -300,4 +300,49 @@
             </root>
         </mxGraphModel>
     </diagram>
+
+    <diagram id="module-comparison" name="Module Comparison">
+        <mxGraphModel dx="1100" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="780" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="ct" value="&lt;b&gt;Module Comparison: Manual vs LZA-Generated&lt;/b&gt;&lt;br&gt;terraform-aws-bedrock-guardrail (manual) vs terraform-aws-bedrock-guardrail-lza (generated)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="20" width="700" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="manual_box" value="terraform-aws-bedrock-guardrail (MANUAL — v1.0.0)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="80" width="480" height="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;• main.tf (guardrail + version)&lt;br&gt;• variables.tf (12 vars, validations)&lt;br&gt;• outputs.tf (5 outputs)&lt;br&gt;• versions.tf (&gt;= 5.60.0)&lt;br&gt;• README.md&lt;br&gt;• examples/complete/main.tf&lt;br&gt;• tests/" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
+                    <mxGeometry x="10" y="35" width="220" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_resources" value="&lt;b&gt;Resources&lt;/b&gt;&lt;br&gt;• aws_bedrock_guardrail.this&lt;br&gt;• aws_bedrock_guardrail_version.this&lt;br&gt;&lt;br&gt;(2 resources total — pure module)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
+                    <mxGeometry x="250" y="35" width="220" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_features" value="&lt;b&gt;Features&lt;/b&gt;&lt;br&gt;• Content filters (6 types)&lt;br&gt;• PII entities (configurable)&lt;br&gt;• Denied topics&lt;br&gt;• Word filters + managed lists&lt;br&gt;• KMS encryption (optional)&lt;br&gt;• Validation blocks on inputs&lt;br&gt;• No provider block inside module" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
+                    <mxGeometry x="10" y="170" width="220" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_absent" value="&lt;b&gt;NOT included&lt;/b&gt;&lt;br&gt;• No LZA tags in module&lt;br&gt;• No CloudWatch alarms&lt;br&gt;• No S3 logging bucket&lt;br&gt;• No IAM roles/policies&lt;br&gt;• No data sources (pure module)&lt;br&gt;• Consumer manages provider+tags" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#DD344C;" vertex="1" parent="manual_box">
+                    <mxGeometry x="250" y="170" width="220" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="gen_box" value="terraform-aws-bedrock-guardrail-lza (GENERATED — LZA-augmented)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="80" width="500" height="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;• main.tf (all-in-one: resources + vars + outputs)&lt;br&gt;• README.md (28KB — full docs)&lt;br&gt;• examples/complete/ (dir created)&lt;br&gt;• tests/ (dir created)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
+                    <mxGeometry x="10" y="35" width="230" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_resources" value="&lt;b&gt;Resources (9+)&lt;/b&gt;&lt;br&gt;• aws_bedrock_guardrail.main&lt;br&gt;• aws_bedrock_guardrail_version&lt;br&gt;• aws_cloudwatch_log_group&lt;br&gt;• aws_cloudwatch_metric_alarm ×2&lt;br&gt;• aws_iam_role (logging)&lt;br&gt;• aws_iam_role_policy (logging)&lt;br&gt;• aws_iam_policy (usage)&lt;br&gt;• module s3-bucket (logs)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
+                    <mxGeometry x="260" y="35" width="230" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_lza" value="&lt;b&gt;LZA-Specific (from KB)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#01A88D&quot;&gt;✓ Tags: clientName=Alithya, CSNA, CostCenter&lt;br&gt;✓ Region: ca-central-1 (hardcoded)&lt;br&gt;✓ KMS: data.aws_kms_key (existing LZA key)&lt;br&gt;✓ Naming: alithya-bedrock-guardrail&lt;br&gt;✓ PII: CA_SOCIAL_INSURANCE_NUMBER&lt;br&gt;✓ Topics: financial/medical/legal advice&lt;br&gt;✓ S3 logs: encryption + HTTPS enforced&lt;br&gt;✓ CloudWatch alarms (blocks + errors)&lt;br&gt;✓ IAM: least-privilege + condition keys&lt;br&gt;✓ Data sources: Endpoint VPC, KMS key&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
+                    <mxGeometry x="10" y="150" width="480" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow_diff" value="&lt;b&gt;KEY DIFFERENCE&lt;/b&gt;&lt;br&gt;Manual = pure reusable module (no org context)&lt;br&gt;Generated = deployment-ready with LZA constraints baked in" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=10;spacing=4;fillColor=#FFF3CD;strokeColor=#ED7100;" vertex="1" parent="1">
+                    <mxGeometry x="250" y="440" width="600" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_c" value="&lt;b&gt;Source&lt;/b&gt;&lt;br&gt;🟢 Manual: written by hand following steering/*.md&lt;br&gt;🔵 Generated: produced by Bedrock Agent with LZA KB context (RAG-augmented)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="510" width="450" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>
