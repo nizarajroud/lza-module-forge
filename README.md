@@ -1,140 +1,173 @@
-# Generate Customized Compliant IaC Scripts for AWS Landing Zone using Amazon Bedrock
+# LZA Module Forge
 
-An automated Terraform code generator that uses **Amazon Bedrock** (Claude Sonnet 4) with **Retrieval Augmented Generation (RAG)** to produce compliant, organization-specific infrastructure-as-code for AWS Landing Zone account customizations.
+Generate **compliant Terraform modules** for AWS Landing Zone environments using **Amazon Bedrock** (Claude Sonnet 4.5) with **Retrieval Augmented Generation (RAG)**.
+
+The generated modules follow organization standards, respect LZA constraints (SCPs, encryption, tagging, region lock), and produce HashiCorp-standard multi-file structure ready for review and deployment.
 
 ## Architecture
 
 ```
-┌─────────────┐     ┌──────────────────┐     ┌─────────────────────┐
-│   Bedrock   │────▶│  Lambda Function │────▶│  Bedrock Knowledge  │
-│    Agent    │     │                  │     │  Base (RAG)         │
-└─────────────┘     │  1. Query KB     │     │  - TF modules       │
-                    │  2. Generate TF  │     │  - Best practices   │
-                    │  3. Generate Doc │     │  - Security configs │
-                    │  4. Commit       │     └─────────────────────┘
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │  GitHub Repo     │
-                    │  (AFT customs)   │
-                    │  - main.tf       │
-                    │  - README.md     │
-                    └──────────────────┘
+┌──────────────┐     ┌──────────────────┐     ┌─────────────────────┐
+│  User/CLI    │────▶│  generate_module │────▶│  Bedrock Knowledge  │
+│              │     │  .py (local)     │     │  Base (RAG)         │
+└──────────────┘     │                  │     │  - LZA constraints  │
+                     │  OR              │     │  - Module standards │
+┌──────────────┐     │                  │     │  - Existing modules │
+│ Bedrock Agent│────▶│  Lambda (AWS)    │     └─────────────────────┘
+└──────────────┘     └────────┬─────────┘
+                              │
+                              ▼
+                     ┌──────────────────┐
+                     │  Local Filesystem │
+                     │  modules/         │
+                     │  terraform-aws-*/ │
+                     │  ├── main.tf      │
+                     │  ├── variables.tf │
+                     │  ├── outputs.tf   │
+                     │  ├── versions.tf  │
+                     │  ├── examples/    │
+                     │  └── README.md    │
+                     └──────────────────┘
 ```
 
-## How It Works
+## Quick Start
 
-1. A user describes the AWS services they need via the Bedrock Agent
-2. The Lambda queries a **Knowledge Base** containing organization-approved Terraform modules
-3. Using RAG, Claude generates Terraform code that follows org best practices and uses approved modules
-4. A README with cost estimation and Well-Architected review is generated
-5. Both files are committed to the AFT account customizations GitHub repository
+```bash
+# 1. Configure
+cp config.env.example config.env
+# Edit config.env with your KB ID, output dir, AWS profile
+
+# 2. Generate a module
+python generate_module.py "Bedrock Knowledge Base" --profile csna-operations-sso-828
+
+# 3. Review and validate
+cd /path/to/output/modules/terraform-aws-bedrock-knowledge-base
+terraform init && terraform validate
+
+# 4. Commit
+git add . && git commit -m "feat: add terraform-aws-bedrock-knowledge-base module"
+```
+
+## Full Workflow
+
+```bash
+# Step 1: Extract LZA constraints into KB-ready JSON
+python extract_lza_config.py /path/to/aws-accelerator-config
+
+# Step 2: Extract existing module patterns into KB-ready JSON
+python extract_tf_registry_v2.py --source local --modules-dir /path/to/terraform-modules
+
+# Step 3: Upload to S3 and sync the Knowledge Base
+./sync-kb.sh --profile csna-operations-sso-828
+
+# Step 4: Generate a new module (augmented by KB context)
+python generate_module.py "Bedrock Knowledge Base" --profile csna-operations-sso-828
+```
 
 ## Project Structure
 
 ```
-.
+lza-module-forge/
+├── generate_module.py              # Local CLI — generate modules on filesystem
+├── extract_lza_config.py           # Parse LZA YAML → KB JSON (org context)
+├── extract_tf_registry.py          # v1: TFC/GitLab/manifest → KB JSON
+├── extract_tf_registry_v2.py       # v2: parse local .tf modules → KB JSON
+├── sync-kb.sh                      # Upload KB JSONs to S3 + trigger ingestion
+├── deploy.sh                       # Full AWS deployment (KB + Lambda + SAM)
+├── setup-kb.py                     # Create Bedrock KB (S3 + AOSS + IAM)
+├── config.env.example              # Configuration template
+├── prompts/
+│   ├── v1.md                       # Prompt v1 (single-file output)
+│   └── v2.md                       # Prompt v2 (multi-file, HashiCorp standard)
 ├── lambda/
 │   ├── src/
-│   │   ├── handler.py          # Lambda entry point
-│   │   ├── bedrock_client.py   # Claude invocation (Messages API)
-│   │   ├── knowledge_base.py   # KB retrieval (RetrieveAndGenerate)
-│   │   └── github_client.py    # GitHub Contents API client
+│   │   ├── handler.py              # Lambda entry point (Agent Action Group)
+│   │   ├── bedrock_client.py       # Claude invocation (loads prompts from prompts/)
+│   │   ├── knowledge_base.py       # KB retrieval (RetrieveAndGenerate)
+│   │   ├── github_client.py        # GitHub commit (OUTPUT_MODE=github)
+│   │   └── local_writer.py         # Local filesystem write (OUTPUT_MODE=local)
 │   ├── tests/
-│   │   └── test_handler.py     # Unit tests
+│   │   └── test_handler.py         # Unit tests (6 passing)
 │   └── requirements.txt
-├── knowledge-base/
-│   ├── terraform-modules-kb.json   # KB data source (upload to S3)
-│   └── README.md
+├── knowledge-base/                 # KB data source (generated JSONs)
+│   ├── org-accounts.json           # Organization structure + accounts
+│   ├── network-topology.json       # VPCs, CIDRs, endpoints
+│   ├── security-constraints.json   # SCPs (raw + summarized)
+│   ├── iam-available.json          # IAM policies, permission sets
+│   ├── existing-resources.json     # Already-deployed customizations
+│   ├── naming-conventions.json     # Naming patterns + mandatory tags
+│   ├── terraform-modules-kb.json   # Existing module patterns
+│   └── terraform-module-standards-kb.json  # Module structure standards
 ├── infrastructure/
-│   └── template.yaml              # SAM/CloudFormation for deployment
-├── .env.example                   # Environment variables template
-└── README.md
+│   ├── template.yaml               # SAM template (Lambda + IAM)
+│   └── openapi-schema.json         # Bedrock Agent Action Group schema
+├── docs/
+│   └── architecture.drawio         # Architecture diagrams (4 tabs)
+└── modules-manifest.yaml.example   # Example manifest for manual module registry
 ```
-
-## Prerequisites
-
-- AWS account with **Amazon Bedrock** access (Claude Sonnet 4 model enabled)
-- **Python 3.11+**
-- AWS CLI configured with appropriate credentials
-- GitHub Personal Access Token with `repo` scope
-
-## Setup
-
-### 1. Knowledge Base
-
-```bash
-# Upload the module definitions to S3
-aws s3 cp knowledge-base/terraform-modules-kb.json s3://your-bucket/kb/
-
-# Create the Knowledge Base in Bedrock console:
-# - Data source: S3 bucket above
-# - Embeddings: Amazon Titan G1 Embeddings
-# - Vector store: Managed (OpenSearch Serverless)
-```
-
-### 2. Lambda Deployment
-
-```bash
-# Configure environment
-cp .env.example .env
-# Edit .env with your values
-
-# Package and deploy (using SAM)
-cd infrastructure
-sam build
-sam deploy --guided
-```
-
-### 3. Bedrock Agent
-
-Create a Bedrock Agent with an Action Group that accepts:
-- `AccountEmail` — email for the new account
-- `AccountName` — name identifier
-- `CustomizationName` — template name for the customization
-- `AwsServices` — comma-separated list of services (e.g., "ec2, s3, rds")
-
-Point the Action Group's Lambda to the deployed function.
 
 ## Configuration
 
-| Variable            | Description                              | Example                                 |
-|---------------------|------------------------------------------|-----------------------------------------|
-| `GITHUB_TOKEN`      | GitHub PAT with repo scope               | `ghp_xxxx`                              |
-| `GITHUB_REPO_OWNER` | GitHub org/user                          | `my-org`                                |
-| `GITHUB_REPO_NAME`  | Target repository                        | `aft-account-customizations`            |
-| `KNOWLEDGE_BASE_ID` | Bedrock KB identifier                    | `ABCDEF1234`                            |
-| `BEDROCK_MODEL_ID`  | Model for generation                     | `anthropic.claude-sonnet-4-20250514-v1:0`       |
-| `AWS_REGION`        | AWS region                               | `ca-central-1`                          |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OUTPUT_MODE` | `local` (filesystem) or `github` (API commit) | `local` |
+| `OUTPUT_MODULES_DIR` | Target directory for generated modules | `/tmp/generated-modules` |
+| `PROMPT_VERSION` | Prompt version (`v1` = single-file, `v2` = multi-file) | `v2` |
+| `KNOWLEDGE_BASE_ID` | Bedrock KB identifier | — |
+| `BEDROCK_MODEL_ID` | Model for generation | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` |
+| `AWS_REGION` | AWS region | `ca-central-1` |
+| `MODULE_PREFIX` | Directory prefix for modules | `terraform-aws` |
+| `LZA_CONFIG_DIR` | Path to LZA config repo | — |
+| `TF_MODULES_DIR` | Path to existing TF modules repo | — |
+
+## How RAG Augmentation Works
+
+```
+User prompt: "Generate a module for Bedrock Knowledge Base"
+                    ↓
+KB Query → returns: LZA constraints + module standards + existing patterns
+                    ↓
+Augmented prompt = user request + org context (CIDRs, SCPs, tags, KMS, naming)
+                    ↓
+Claude Sonnet 4.5 → generates module compliant with ALL org constraints
+                    ↓
+Output: 6 files (main.tf, variables.tf, outputs.tf, versions.tf, example, README)
+```
+
+## Deployed Infrastructure (Operations Account)
+
+| Resource | Value |
+|----------|-------|
+| Lambda | `arn:aws:lambda:ca-central-1:026991214828:function:lza-terraform-generator` |
+| Knowledge Base | `7NGH4NNDFC` |
+| AOSS Collection | `jppv04jl6kfllnrzdf44` |
+| S3 Bucket | `lza-terraform-kb-data-026991214828` |
+| Bedrock Agent | `7R6JXTKLR6` (agent-lztf) |
+| Model | Claude Sonnet 4.5 via `us.anthropic.claude-sonnet-4-5-20250929-v1:0` |
+
+## 3-Repos Ecosystem
+
+```
+poc-bnc-terraform-modules/          ← Module Library (source of truth)
+    │
+    ├── extract_tf_registry_v2.py reads existing modules
+    │         ↓
+lza-module-forge/                   ← THIS REPO (Generator)
+    │   KB + Claude → generates new modules
+    │         ↓
+    ├── writes to poc-bnc-terraform-modules/modules/
+    │
+poc-bnc-bedrock-deployment/         ← Consumer (deploys via TF Registry)
+alth-poc-bnc-bedrock-deployment/    ← Consumer (Alithya LZ simulation)
+```
 
 ## Testing
 
 ```bash
 cd lambda
-pip install pytest
 python -m pytest tests/ -v
 ```
 
-## Lambda IAM Permissions Required
-
-```json
-{
-  "Effect": "Allow",
-  "Action": [
-    "bedrock:InvokeModel",
-    "bedrock:RetrieveAndGenerate"
-  ],
-  "Resource": "*"
-}
-```
-
-## Supported Services
-
-The Knowledge Base includes module definitions for: EC2, RDS, S3, VPC, IAM, ELB, Auto Scaling, DynamoDB, Lambda, API Gateway, Security Groups, CloudFront, Route53, SQS, SNS, ECS, EKS, CloudWatch, KMS, and CodeBuild.
-
-Add new modules by updating `knowledge-base/terraform-modules-kb.json` and syncing the KB.
-
 ## License
 
-This project is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
+MIT-0 — See [LICENSE](LICENSE)
