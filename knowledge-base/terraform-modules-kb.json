@@ -1,7 +1,7 @@
 {
   "documentType": "terraform-module-registry",
-  "extractedAt": "2026-07-07T14:39:02.315957+00:00",
-  "totalModules": 1,
+  "extractedAt": "2026-07-08T10:01:15.575033+00:00",
+  "totalModules": 2,
   "description": "Organization-approved Terraform modules. When generating a NEW module, follow the exact same structure, naming conventions, variable patterns, validation blocks, and security practices as these existing modules. Use them as the REFERENCE PATTERN to replicate.",
   "TerraformModules": [
     {
@@ -163,6 +163,330 @@
       },
       "Example": "terraform {\n  required_version = \">= 1.5\"\n\n  required_providers {\n    aws = {\n      source  = \"hashicorp/aws\"\n      version = \">= 5.60.0\"\n    }\n  }\n}\n\nprovider \"aws\" {\n  region = \"us-east-1\"\n}\n\nlocals {\n  tags = {\n    Environment = \"dev\"\n    Project     = \"bnc-bedrock-onboarding\"\n    Team        = \"cloud-platform\"\n    ManagedBy   = \"terraform\"\n  }\n}\n\nmodule \"bedrock_guardrail\" {\n  source = \"../../\"\n\n  name        = \"bnc-financial-guardrail\"\n  description = \"Production guardrail for BNC AI services - financial services compliance\"\n\n  content_filters = [\n    { type = \"HATE\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"INSULTS\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"SEXUAL\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"VIOLENCE\", input_strength = \"MEDIUM\", output_strength = \"HIGH\" },\n    { type = \"MISCONDUCT\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"PROMPT_ATTACK\", input_strength = \"HIGH\", output_strength = \"NONE\" },\n  ]\n\n  denied_topics = [\n    {\n      name       = \"investment_advice\"\n      definition = \"Providing specific investment recommendations, stock picks, or personalized financial advice\"\n      examples   = [\"Should I buy AAPL?\", \"What's the best ETF?\", \"Invest my savings\"]\n    },\n    {\n      name       = \"competitor_info\"\n      definition = \"Sharing confidential information about competitor banks or internal strategies\"\n      examples   = [\"What is Desjardins doing?\", \"Compare us to TD Bank internally\"]\n    }\n  ]\n\n  pii_entities = [\n    { type = \"CREDIT_DEBIT_CARD_NUMBER\", action = \"BLOCK\" },\n    { type = \"US_SOCIAL_SECURITY_NUMBER\", action = \"BLOCK\" },\n    { type = \"EMAIL\", action = \"ANONYMIZE\" },\n    { type = \"PHONE\", action = \"ANONYMIZE\" },\n    { type = \"NAME\", action = \"ANONYMIZE\" },\n  ]\n\n  managed_word_lists = [\"PROFANITY\"]\n\n  tags = local.tags\n}\n\noutput \"guardrail_id\" {\n  value = module.bedrock_guardrail.guardrail_id\n}\n\noutput \"guardrail_arn\" {\n  value = module.bedrock_guardrail.guardrail_arn\n}\n\noutput \"guardrail_version\" {\n  value = module.bedrock_guardrail.guardrail_version\n}\n",
       "README": "# terraform-aws-bedrock-guardrail\n\nTerraform module to create and manage Amazon Bedrock Guardrails with content filtering, PII detection, denied topics, and word filters.\n\n## Requirements\n\n| Name | Version |\n|------|---------|\n| terraform | >= 1.5 |\n| aws | >= 5.60.0 |\n\n## Usage\n\n```hcl\nmodule \"bedrock_guardrail\" {\n  source = \"github.com/nizarajroud/poc-bnc-terraform-modules//modules/terraform-aws-bedrock-guardrail?ref=v1.0.0\"\n\n  name        = \"financial-services-guardrail\"\n  description = \"Guardrail for BNC AI workloads\"\n\n  content_filters = [\n    { type = \"HATE\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"SEXUAL\", input_strength = \"HIGH\", output_strength = \"HIGH\" },\n    { type = \"VIOLENCE\", input_strength = \"MEDIUM\", output_strength = \"HIGH\" },\n    { type = \"PROMPT_ATTACK\", input_strength = \"HIGH\", output_strength = \"NONE\" },\n  ]\n\n  denied_topics = [\n    {\n      name       = \"investment_advice\"\n      definition = \"Providing specific investment recommendations or financial advice\"\n      examples   = [\"Should I buy this stock?\", \"What should I invest in?\"]\n    }\n  ]\n\n  pii_entities = [\n    { type = \"CREDIT_DEBIT_CARD_NUMBER\", action = \"BLOCK\" },\n    { type = \"US_SOCIAL_SECURITY_NUMBER\", action = \"BLOCK\" },\n    { type = \"EMAIL\", action = \"ANONYMIZE\" },\n    { type = \"PHONE\", action = \"ANONYMIZE\" },\n  ]\n\n  kms_key_arn = \"arn:aws:kms:ca-central-1:123456789012:key/example-key-id\"  # optional\n\n  tags = {\n    Environment = \"dev\"\n    Project     = \"bnc-bedrock-onboarding\"\n    ManagedBy   = \"terraform\"\n  }\n}\n```\n\n## Inputs\n\n| Name | Description | Type | Default | Required |\n|------|-------------|------|---------|----------|\n| name | Name of the guardrail (1-50 chars) | `string` | - | yes |\n| description | Description | `string` | `\"\"` | no |\n| blocked_input_messaging | Message when input is blocked | `string` | (default message) | no |\n| blocked_output_messaging | Message when output is blocked | `string` | (default message) | no |\n| content_filters | Content filter rules (validated) | `list(object)` | All HIGH | no |\n| denied_topics | Topics to deny | `list(object)` | `[]` | no |\n| pii_entities | PII types to detect (validated) | `list(object)` | `[]` | no |\n| word_filters | Exact words to block | `list(string)` | `[]` | no |\n| managed_word_lists | Managed word lists | `list(string)` | `[\"PROFANITY\"]` | no |\n| kms_key_arn | KMS key ARN for encryption (null = AWS-managed) | `string` | `null` | no |\n| create_version | Create a guardrail version | `bool` | `true` | no |\n| tags | Resource tags | `map(string)` | `{}` | no |\n\n## Outputs\n\n| Name | Description |\n|------|-------------|\n| guardrail_id | The ID of the guardrail |\n| guardrail_arn | The ARN of the guardrail |\n| guardrail_version | Version number (if created) |\n| status | Status of the guardrail |\n| kms_key_arn | KMS key ARN used (null if AWS-managed) |\n\n## Security\n\n- KMS encryption supported via `kms_key_arn` variable\n- Validation blocks enforce allowed enum values (prevents typos)\n- Tags enforced via Sentinel policy (see `policies/sentinel/`)\n- Region defaults to `ca-central-1` (data residency compliance)\n",
+      "BestPractices": "",
+      "SecurityNotes": "",
+      "RegistryType": "local"
+    },
+    {
+      "ModuleName": "terraform-aws-bedrock-knowledge-base",
+      "ModuleSource": "github.com/nizarajroud/poc-bnc-terraform-modules//modules/terraform-aws-bedrock-knowledge-base",
+      "Description": "",
+      "LatestVersion": "latest",
+      "Variables": [
+        {
+          "name": "name",
+          "description": "Name of the Bedrock Knowledge Base. Used as a base for naming all resources.",
+          "type": "string",
+          "required": true,
+          "has_validation": true
+        },
+        {
+          "name": "name_prefix",
+          "description": "Optional prefix to add to all resource names. Useful for multi-environment deployments.",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "has_validation": true
+        },
+        {
+          "name": "description",
+          "description": "Description of the Bedrock Knowledge Base.",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "has_validation": false
+        },
+        {
+          "name": "embedding_model_arn",
+          "description": "ARN suffix of the embedding model to use (e.g., 'amazon.titan-embed-text-v1'). Full ARN is constructed automatically.",
+          "type": "string",
+          "required": false,
+          "default": "\"amazon.titan-embed-text-v1\"",
+          "has_validation": true
+        },
+        {
+          "name": "vector_index_name",
+          "description": "Name of the vector index in OpenSearch Serverless.",
+          "type": "string",
+          "required": false,
+          "default": "\"bedrock-knowledge-base-default-index\"",
+          "has_validation": true
+        },
+        {
+          "name": "vector_field_name",
+          "description": "Name of the vector field in the OpenSearch index.",
+          "type": "string",
+          "required": false,
+          "default": "\"bedrock-knowledge-base-default-vector\"",
+          "has_validation": false
+        },
+        {
+          "name": "text_field_name",
+          "description": "Name of the text field in the OpenSearch index.",
+          "type": "string",
+          "required": false,
+          "default": "\"AMAZON_BEDROCK_TEXT_CHUNK\"",
+          "has_validation": false
+        },
+        {
+          "name": "metadata_field_name",
+          "description": "Name of the metadata field in the OpenSearch index.",
+          "type": "string",
+          "required": false,
+          "default": "\"AMAZON_BEDROCK_METADATA\"",
+          "has_validation": false
+        },
+        {
+          "name": "kms_key_arn",
+          "description": "ARN of the KMS key to use for S3 bucket encryption. If null, uses AWS-managed encryption (AES256).",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "has_validation": false
+        },
+        {
+          "name": "opensearch_kms_key_arn",
+          "description": "ARN of the KMS key to use for OpenSearch Serverless encryption. If null, uses AWS-owned key.",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "has_validation": false
+        },
+        {
+          "name": "opensearch_vpc_endpoint_ids",
+          "description": "List of VPC endpoint IDs for OpenSearch Serverless network access. Required for private access from VPC.",
+          "type": "list(string)",
+          "required": false,
+          "default": "[]",
+          "has_validation": false
+        },
+        {
+          "name": "additional_opensearch_principals",
+          "description": "Additional IAM principal ARNs to grant OpenSearch Serverless access (e.g., Lambda execution roles).",
+          "type": "list(string)",
+          "required": false,
+          "default": "[]",
+          "has_validation": false
+        },
+        {
+          "name": "force_destroy",
+          "description": "Allow destruction of S3 bucket even if it contains objects. Use with caution in production.",
+          "type": "bool",
+          "required": false,
+          "default": "false",
+          "has_validation": false
+        },
+        {
+          "name": "create_data_source",
+          "description": "Whether to create a data source for the knowledge base. Set to false if you want to create data sources separately.",
+          "type": "bool",
+          "required": false,
+          "default": "true",
+          "has_validation": false
+        },
+        {
+          "name": "data_source_description",
+          "description": "Description of the data source. If empty, a default description is generated.",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "has_validation": false
+        },
+        {
+          "name": "s3_inclusion_prefixes",
+          "description": "List of S3 prefixes to include in the data source. If empty, all objects in the bucket are included.",
+          "type": "list(string)",
+          "required": false,
+          "default": "[]",
+          "has_validation": false
+        },
+        {
+          "name": "chunking_strategy",
+          "description": "Chunking strategy for document ingestion. Valid values: FIXED_SIZE, NONE. If null, uses Bedrock default.",
+          "type": "string",
+          "required": false,
+          "default": "\"FIXED_SIZE\"",
+          "has_validation": true
+        },
+        {
+          "name": "fixed_size_chunking_configuration",
+          "description": "Configuration for fixed-size chunking strategy. Only used when chunking_strategy is FIXED_SIZE.",
+          "type": "object({",
+          "required": false,
+          "has_validation": true
+        },
+        {
+          "name": "tags",
+          "description": "Map of tags to apply to all resources. Should include mandatory organizational tags (ClientName, MaintainersTeam, CostCenter, etc.).",
+          "type": "map(string)",
+          "required": false,
+          "default": "{}",
+          "has_validation": false
+        }
+      ],
+      "RequiredParameters": [
+        "name"
+      ],
+      "OptionalParameters": [
+        "name_prefix",
+        "description",
+        "embedding_model_arn",
+        "vector_index_name",
+        "vector_field_name",
+        "text_field_name",
+        "metadata_field_name",
+        "kms_key_arn",
+        "opensearch_kms_key_arn",
+        "opensearch_vpc_endpoint_ids",
+        "additional_opensearch_principals",
+        "force_destroy",
+        "create_data_source",
+        "data_source_description",
+        "s3_inclusion_prefixes",
+        "chunking_strategy",
+        "fixed_size_chunking_configuration",
+        "tags"
+      ],
+      "Outputs": [
+        {
+          "name": "knowledge_base_id",
+          "description": "ID of the Bedrock Knowledge Base.",
+          "value_expression": "aws_bedrockagent_knowledge_base.this.id"
+        },
+        {
+          "name": "knowledge_base_arn",
+          "description": "ARN of the Bedrock Knowledge Base.",
+          "value_expression": "aws_bedrockagent_knowledge_base.this.arn"
+        },
+        {
+          "name": "knowledge_base_name",
+          "description": "Name of the Bedrock Knowledge Base.",
+          "value_expression": "aws_bedrockagent_knowledge_base.this.name"
+        },
+        {
+          "name": "data_source_id",
+          "description": "ID of the Bedrock Data Source. Empty if create_data_source is false.",
+          "value_expression": "var.create_data_source ? aws_bedrockagent_data_source.this[0].id : \"\""
+        },
+        {
+          "name": "data_source_arn",
+          "description": "ID of the Bedrock Data Source. Empty if create_data_source is false.",
+          "value_expression": "var.create_data_source ? aws_bedrockagent_data_source.this[0].data_source_id : \"\""
+        },
+        {
+          "name": "s3_bucket_id",
+          "description": "ID of the S3 bucket used for knowledge base data.",
+          "value_expression": "aws_s3_bucket.this.id"
+        },
+        {
+          "name": "s3_bucket_arn",
+          "description": "ARN of the S3 bucket used for knowledge base data.",
+          "value_expression": "aws_s3_bucket.this.arn"
+        },
+        {
+          "name": "s3_bucket_name",
+          "description": "Name of the S3 bucket used for knowledge base data.",
+          "value_expression": "aws_s3_bucket.this.bucket"
+        },
+        {
+          "name": "opensearch_collection_id",
+          "description": "ID of the OpenSearch Serverless collection.",
+          "value_expression": "aws_opensearchserverless_collection.this.id"
+        },
+        {
+          "name": "opensearch_collection_arn",
+          "description": "ARN of the OpenSearch Serverless collection.",
+          "value_expression": "aws_opensearchserverless_collection.this.arn"
+        },
+        {
+          "name": "opensearch_collection_endpoint",
+          "description": "Endpoint URL of the OpenSearch Serverless collection.",
+          "value_expression": "aws_opensearchserverless_collection.this.collection_endpoint"
+        },
+        {
+          "name": "opensearch_dashboard_endpoint",
+          "description": "Dashboard endpoint URL of the OpenSearch Serverless collection.",
+          "value_expression": "aws_opensearchserverless_collection.this.dashboard_endpoint"
+        },
+        {
+          "name": "iam_role_arn",
+          "description": "ARN of the IAM role used by the Knowledge Base.",
+          "value_expression": "aws_iam_role.knowledge_base.arn"
+        },
+        {
+          "name": "iam_role_name",
+          "description": "Name of the IAM role used by the Knowledge Base.",
+          "value_expression": "aws_iam_role.knowledge_base.name"
+        }
+      ],
+      "Resources": [
+        {
+          "type": "aws_s3_bucket",
+          "name": "this"
+        },
+        {
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "this"
+        },
+        {
+          "type": "aws_s3_bucket_versioning",
+          "name": "this"
+        },
+        {
+          "type": "aws_s3_bucket_server_side_encryption_configuration",
+          "name": "this"
+        },
+        {
+          "type": "aws_s3_bucket_policy",
+          "name": "this"
+        },
+        {
+          "type": "aws_opensearchserverless_security_policy",
+          "name": "encryption"
+        },
+        {
+          "type": "aws_opensearchserverless_security_policy",
+          "name": "network"
+        },
+        {
+          "type": "aws_opensearchserverless_access_policy",
+          "name": "this"
+        },
+        {
+          "type": "aws_opensearchserverless_collection",
+          "name": "this"
+        },
+        {
+          "type": "aws_iam_role",
+          "name": "knowledge_base"
+        },
+        {
+          "type": "aws_iam_role_policy",
+          "name": "s3_access"
+        },
+        {
+          "type": "aws_iam_role_policy",
+          "name": "opensearch_access"
+        },
+        {
+          "type": "aws_iam_role_policy",
+          "name": "bedrock_model_access"
+        },
+        {
+          "type": "aws_bedrockagent_knowledge_base",
+          "name": "this"
+        },
+        {
+          "type": "aws_bedrockagent_data_source",
+          "name": "this"
+        }
+      ],
+      "ProviderConstraints": {
+        "terraform": ">= 1.5.0",
+        "aws_provider": ">= 1.5.0"
+      },
+      "Example": "# Complete example of Bedrock Knowledge Base module\n# This example demonstrates a production-ready configuration for a financial services organization\n\nprovider \"aws\" {\n  region = \"ca-central-1\"\n\n  default_tags {\n    tags = {\n      ClientName       = \"Alithya\"\n      MaintainersTeam  = \"IO\"\n      CostCenter       = \"Engineering\"\n      Environment      = \"Production\"\n      Project          = \"AI-Knowledge-Management\"\n      DataClassification = \"Confidential\"\n      Compliance       = \"SOC2-PCI-DSS\"\n    }\n  }\n}\n\n# Data source to get existing KMS key for encryption\ndata \"aws_kms_key\" \"s3\" {\n  key_id = \"alias/s3-encryption-key\"\n}\n\ndata \"aws_kms_key\" \"opensearch\" {\n  key_id = \"alias/opensearch-encryption-key\"\n}\n\n# Data source to get VPC endpoint for OpenSearch Serverless\n# In LZA environment, this would be in the Endpoint VPC (10.7.0.0/22)\ndata \"aws_vpc_endpoint\" \"opensearch\" {\n  vpc_id       = \"vpc-xxxxxxxxx\" # Replace with actual Endpoint VPC ID\n  service_name = \"com.amazonaws.ca-central-1.aos\"\n}\n\n# Example 1: Financial Services Knowledge Base with PII-sensitive documents\nmodule \"financial_kb\" {\n  source = \"../../\"\n\n  name        = \"financial-docs-kb\"\n  name_prefix = \"prod\"\n  description = \"Knowledge base for financial services documentation with PII protection\"\n\n  # Use Amazon Titan Embeddings V2 for better performance\n  embedding_model_arn = \"amazon.titan-embed-text-v2:0\"\n\n  # KMS encryption for data at rest (LZA requirement)\n  kms_key_arn           = data.aws_kms_key.s3.arn\n  opensearch_kms_key_arn = data.aws_kms_key.opensearch.arn\n\n  # Private access via VPC endpoint (LZA best practice)\n  opensearch_vpc_endpoint_ids = [data.aws_vpc_endpoint.opensearch.id]\n\n  # Additional principals that need access (e.g., Lambda functions)\n  additional_opensearch_principals = [\n    \"arn:aws:iam::123456789012:role/financial-chatbot-lambda-role\"\n  ]\n\n  # OpenSearch index configuration\n  vector_index_name  = \"financial-docs-index\"\n  vector_field_name  = \"embedding\"\n  text_field_name    = \"text_content\"\n  metadata_field_name = \"document_metadata\"\n\n  # S3 data source configuration\n  create_data_source = true\n  s3_inclusion_prefixes = [\n    \"policies/\",\n    \"procedures/\",\n    \"compliance/\"\n  ]\n\n  # Chunking strategy optimized for financial documents\n  chunking_strategy = \"FIXED_SIZE\"\n  fixed_size_chunking_configuration = {\n    max_tokens         = 512  # Larger chunks for context\n    overlap_percentage = 25   # Higher overlap for better retrieval\n  }\n\n  # Do not allow bucket destruction in production\n  force_destroy = false\n\n  # Mandatory organizational tags (merged with provider default_tags)\n  tags = {\n    Application     = \"Financial-Knowledge-Base\"\n    DataRetention   = \"7-years\"\n    BackupPolicy    = \"Daily\"\n    DisasterRecovery = \"Critical\"\n  }\n}\n\n# Example 2: Customer Support Knowledge Base\nmodule \"support_kb\" {\n  source = \"../../\"\n\n  name        = \"customer-support-kb\"\n  name_prefix = \"prod\"\n  description = \"Knowledge base for customer support articles and FAQs\"\n\n  # Use Cohere multilingual embeddings for multi-language support\n  embedding_model_arn = \"cohere.embed-multilingual-v3\"\n\n  # KMS encryption\n  kms_key_arn           = data.aws_kms_key.s3.arn\n  opensearch_kms_key_arn = data.aws_kms_key.opensearch.arn\n\n  # Private access\n  opensearch_vpc_endpoint_ids = [data.aws_vpc_endpoint.opensearch.id]\n\n  # OpenSearch index configuration\n  vector_index_name  = \"support-articles-index\"\n  vector_field_name  = \"embedding\"\n  text_field_name    = \"article_text\"\n  metadata_field_name = \"article_metadata\"\n\n  # S3 data source configuration\n  create_data_source = true\n  s3_inclusion_prefixes = [\n    \"articles/\",\n    \"faqs/\"\n  ]\n\n  # Smaller chunks for FAQ-style content\n  chunking_strategy = \"FIXED_SIZE\"\n  fixed_size_chunking_configuration = {\n    max_tokens         = 200\n    overlap_percentage = 15\n  }\n\n  force_destroy = false\n\n  tags = {\n    Application     = \"Customer-Support-KB\"\n    DataRetention   = \"3-years\"\n    BackupPolicy    = \"Daily\"\n    DisasterRecovery = \"High\"\n  }\n}\n\n# Example 3: Knowledge Base without automatic data source (manual ingestion)\nmodule \"manual_kb\" {\n  source = \"../../\"\n\n  name        = \"manual-ingestion-kb\"\n  name_prefix = \"prod\"\n  description = \"Knowledge base with manual data source management\"\n\n  embedding_model_arn = \"amazon.titan-embed-text-v1\"\n\n  kms_key_arn           = data.aws_kms_key.s3.arn\n  opensearch_kms_key_arn = data.aws_kms_key.opensearch.arn\n\n  opensearch_vpc_endpoint_ids = [data.aws_vpc_endpoint.opensearch.id]\n\n  # Do not create automatic data source\n  create_data_source = false\n\n  # Custom chunking disabled\n  chunking_strategy = \"NONE\"\n\n  force_destroy = false\n\n  tags = {\n    Application     = \"Manual-Ingestion-KB\"\n    DataRetention   = \"5-years\"\n    BackupPolicy    = \"Weekly\"\n    DisasterRecovery = \"Medium\"\n  }\n}\n\n# Outputs for integration with other systems\noutput \"financial_kb_id\" {\n  description = \"ID of the financial knowledge base for API integration\"\n  value       = module.financial_kb.knowledge_base_id\n}\n\noutput \"financial_kb_s3_bucket\" {\n  description = \"S3 bucket name for uploading financial documents\"\n  value       = module.financial_kb.s3_bucket_name\n}\n\noutput \"support_kb_id\" {\n  description = \"ID of the support knowledge base for chatbot integration\"\n  value       = module.support_kb.knowledge_base_id\n}\n\noutput \"support_kb_opensearch_endpoint\" {\n  description = \"OpenSearch endpoint for direct queries (if needed)\"\n  value       = module.support_kb.opensearch_collection_endpoint\n}\n\noutput \"manual_kb_role_arn\" {\n  description = \"IAM role ARN for manual ingestion workflows\"\n  value       = module.manual_kb.iam_role_arn\n}\n\n# Example terraform.tfvars content:\n# \n# This example shows how to use the module in a real LZA environment.\n# \n# Key considerations for LZA deployment:\n# 1. All resources are deployed in ca-central-1 (primary region)\n# 2. KMS encryption is mandatory for S3 and OpenSearch\n# 3. VPC endpoints are used for private connectivity (no public access)\n# 4. S3 buckets have versioning enabled and block all public access\n# 5. HTTPS-only access is enforced via bucket policy\n# 6. Mandatory tags are applied via provider default_tags\n# 7. IAM roles follow least-privilege principle\n# 8. OpenSearch Serverless is used instead of managed OpenSearch for serverless scaling\n# \n# Network topology:\n# - OpenSearch VPC endpoint is in the Endpoint VPC (10.7.0.0/22)\n# - Lambda functions accessing the KB should be in the same VPC or connected via Transit Gateway\n# - No direct internet access - all traffic goes through VPC endpoints\n# \n# Security considerations:\n# - Knowledge bases may contain PII and sensitive financial data\n# - Chunking strategy should balance context vs. data exposure\n# - Access to OpenSearch is restricted via IAM and data access policies\n# - S3 bucket policies enforce encryption in transit and at rest\n# - Regular audits of access logs are recommended (enable S3 access logging)\n",
+      "README": "# AWS Bedrock Knowledge Base Terraform Module\n\n## Overview\n\nThis Terraform module deploys a complete AWS Bedrock Knowledge Base infrastructure with integrated vector search capabilities. The solution enables Retrieval-Augmented Generation (RAG) applications by combining Amazon Bedrock's foundation models with your organization's proprietary data.\n\n### Architecture\n\nThe module provisions the following components:\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502                     AWS Account (ca-central-1)                  \u2502\n\u2502                                                                 \u2502\n\u2502  \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510         \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510 \u2502\n\u2502  \u2502   S3 Bucket  \u2502\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6\u2502   Bedrock Knowledge Base        \u2502 \u2502\n\u2502  \u2502  (Data Store)\u2502         \u2502   - Embedding Model             \u2502 \u2502\n\u2502  \u2502  - Encrypted \u2502         \u2502   - Vector Configuration        \u2502 \u2502\n\u2502  \u2502  - Versioned \u2502         \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518 \u2502\n\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518                        \u2502                     \u2502\n\u2502                                          \u2502                     \u2502\n\u2502                                          \u25bc                     \u2502\n\u2502                          \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u2502\n\u2502                          \u2502 OpenSearch Serverless         \u2502    \u2502\n\u2502                          \u2502 - Vector Search Collection    \u2502    \u2502\n\u2502                          \u2502 - Private VPC Endpoints       \u2502    \u2502\n\u2502                          \u2502 - Encrypted at Rest           \u2502    \u2502\n\u2502                          \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518    \u2502\n\u2502                                                                 \u2502\n\u2502  \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510 \u2502\n\u2502  \u2502              IAM Role & Policies                         \u2502 \u2502\n\u2502  \u2502  - S3 Read Access                                        \u2502 \u2502\n\u2502  \u2502  - OpenSearch API Access                                 \u2502 \u2502\n\u2502  \u2502  - Bedrock Model Invocation                              \u2502 \u2502\n\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518 \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n```\n\n### Key Features\n\n- **Fully Managed Vector Store**: OpenSearch Serverless collection optimized for vector search\n- **Secure Data Ingestion**: S3 bucket with encryption, versioning, and LZA-compliant policies\n- **Flexible Chunking**: Configurable document chunking strategies for optimal retrieval\n- **Private Network Access**: VPC endpoint integration for OpenSearch Serverless\n- **LZA Compliance**: Built-in security controls aligned with Landing Zone Accelerator SCPs\n- **Multi-Model Support**: Compatible with various Bedrock embedding models\n\n## Prerequisites\n\n### Required Tools\n\n- **Terraform**: Version 1.5.0 or later\n- **AWS CLI**: Version 2.x configured with appropriate credentials\n- **jq**: For JSON processing (optional, for validation scripts)\n\n### AWS Account Setup\n\nThis module is designed for deployment in an **Alithya Landing Zone Accelerator (LZA)** environment:\n\n1. **Target Account**: Deploy to a workload account (not the management account)\n2. **Region**: `ca-central-1` (Canada Central - Montreal)\n3. **Network Prerequisites**: \n   - VPC with private subnets configured\n   - VPC endpoints for OpenSearch Serverless created\n   - Security groups allowing HTTPS traffic\n\n### Required AWS Permissions\n\nThe deploying IAM principal requires the following permissions:\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"s3:CreateBucket\",\n        \"s3:PutBucketPolicy\",\n        \"s3:PutBucketVersioning\",\n        \"s3:PutEncryptionConfiguration\",\n        \"s3:PutBucketPublicAccessBlock\",\n        \"aoss:CreateCollection\",\n        \"aoss:CreateSecurityPolicy\",\n        \"aoss:CreateAccessPolicy\",\n        \"bedrock:CreateKnowledgeBase\",\n        \"bedrock:CreateDataSource\",\n        \"iam:CreateRole\",\n        \"iam:PutRolePolicy\",\n        \"iam:PassRole\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n### Bedrock Model Access\n\nEnsure Amazon Bedrock model access is enabled in your account:\n\n1. Navigate to Amazon Bedrock console\n2. Go to \"Model access\" in the left navigation\n3. Request access to embedding models (e.g., `amazon.titan-embed-text-v1`)\n4. Wait for approval (typically instant for Titan models)\n\n### LZA Account Baseline\n\nVerify your account has the standard LZA baseline:\n\n- \u2705 AWS Config enabled\n- \u2705 CloudTrail logging to central S3 bucket\n- \u2705 GuardDuty enabled\n- \u2705 Security Hub enabled\n- \u2705 SCPs applied for encryption and network controls\n\n## Usage\n\n### Basic Deployment\n\n1. **Clone or reference this module**:\n\n```hcl\nmodule \"bedrock_knowledge_base\" {\n  source = \"./path-to-module\"\n\n  name        = \"customer-support\"\n  name_prefix = \"alithya-prod\"\n  description = \"Knowledge base for customer support documentation\"\n\n  # OpenSearch Serverless Configuration\n  opensearch_vpc_endpoint_ids = [\n    \"vpce-0123456789abcdef0\"\n  ]\n\n  # Embedding Model\n  embedding_model_arn = \"amazon.titan-embed-text-v1\"\n\n  # Vector Configuration\n  vector_index_name   = \"customer-support-index\"\n  vector_field_name   = \"embedding\"\n  text_field_name     = \"text\"\n  metadata_field_name = \"metadata\"\n\n  # Data Source Configuration\n  create_data_source = true\n  chunking_strategy  = \"FIXED_SIZE\"\n  \n  fixed_size_chunking_configuration = {\n    max_tokens         = 512\n    overlap_percentage = 20\n  }\n\n  # Tags\n  tags = {\n    Environment = \"production\"\n    Project     = \"customer-support-ai\"\n    CostCenter  = \"engineering\"\n    Owner       = \"platform-team@alithya.com\"\n  }\n}\n```\n\n2. **Initialize Terraform**:\n\n```bash\nterraform init\n```\n\n3. **Review the execution plan**:\n\n```bash\nterraform plan -out=tfplan\n```\n\n4. **Apply the configuration**:\n\n```bash\nterraform apply tfplan\n```\n\n### Advanced Configuration with KMS Encryption\n\n```hcl\nmodule \"bedrock_knowledge_base\" {\n  source = \"./path-to-module\"\n\n  name        = \"financial-docs\"\n  name_prefix = \"alithya-prod\"\n\n  # Custom KMS keys for enhanced security\n  kms_key_arn            = \"arn:aws:kms:ca-central-1:123456789012:key/12345678-1234-1234-1234-123456789012\"\n  opensearch_kms_key_arn = \"arn:aws:kms:ca-central-1:123456789012:key/87654321-4321-4321-4321-210987654321\"\n\n  # OpenSearch Configuration\n  opensearch_vpc_endpoint_ids = [\n    \"vpce-0123456789abcdef0\",\n    \"vpce-0fedcba9876543210\"\n  ]\n\n  # Additional principals for OpenSearch access\n  additional_opensearch_principals = [\n    \"arn:aws:iam::123456789012:role/DataScientistRole\"\n  ]\n\n  # S3 Configuration\n  s3_inclusion_prefixes = [\"documents/\", \"knowledge/\"]\n  force_destroy         = false\n\n  # Chunking Strategy\n  chunking_strategy = \"FIXED_SIZE\"\n  fixed_size_chunking_configuration = {\n    max_tokens         = 300\n    overlap_percentage = 15\n  }\n\n  tags = {\n    Environment  = \"production\"\n    Compliance   = \"financial-data\"\n    DataClass    = \"confidential\"\n  }\n}\n```\n\n### Deployment in ca-central-1\n\nEnsure your AWS provider is configured for the Canada Central region:\n\n```hcl\nprovider \"aws\" {\n  region = \"ca-central-1\"\n  \n  default_tags {\n    tags = {\n      ManagedBy    = \"Terraform\"\n      Organization = \"Alithya\"\n      Region       = \"ca-central-1\"\n    }\n  }\n}\n```\n\n### Post-Deployment Steps\n\n1. **Upload documents to S3**:\n\n```bash\naws s3 cp ./documents/ s3://alithya-prod-customer-support-kb-data/ --recursive\n```\n\n2. **Start ingestion job** (if data source created):\n\n```bash\naws bedrock-agent start-ingestion-job \\\n  --knowledge-base-id <knowledge-base-id> \\\n  --data-source-id <data-source-id> \\\n  --region ca-central-1\n```\n\n3. **Verify vector index creation**:\n\n```bash\naws opensearchserverless batch-get-collection \\\n  --ids <collection-id> \\\n  --region ca-central-1\n```\n\n## Variables\n\n| Variable | Type | Description | Default | Required |\n|----------|------|-------------|---------|----------|\n| `name` | `string` | Base name for all resources | n/a | Yes |\n| `name_prefix` | `string` | Prefix to add to all resource names (e.g., 'alithya-prod') | `\"\"` | No |\n| `description` | `string` | Description for the knowledge base | `\"\"` | No |\n| `embedding_model_arn` | `string` | ARN of the Bedrock embedding model (e.g., 'amazon.titan-embed-text-v1') | `\"amazon.titan-embed-text-v1\"` | No |\n| `vector_index_name` | `string` | Name of the vector index in OpenSearch | `\"bedrock-knowledge-base-index\"` | No |\n| `vector_field_name` | `string` | Name of the vector field in the index | `\"bedrock-knowledge-base-default-vector\"` | No |\n| `text_field_name` | `string` | Name of the text field in the index | `\"AMAZON_BEDROCK_TEXT_CHUNK\"` | No |\n| `metadata_field_name` | `string` | Name of the metadata field in the index | `\"AMAZON_BEDROCK_METADATA\"` | No |\n| `opensearch_vpc_endpoint_ids` | `list(string)` | List of VPC endpoint IDs for OpenSearch Serverless access | `[]` | Yes |\n| `opensearch_kms_key_arn` | `string` | KMS key ARN for OpenSearch encryption (null = AWS owned key) | `null` | No |\n| `additional_opensearch_principals` | `list(string)` | Additional IAM principal ARNs to grant OpenSearch access | `[]` | No |\n| `kms_key_arn` | `string` | KMS key ARN for S3 bucket encryption (null = AES256) | `null` | No |\n| `force_destroy` | `bool` | Allow destruction of S3 bucket with objects | `false` | No |\n| `create_data_source` | `bool` | Whether to create a Bedrock data source | `true` | No |\n| `data_source_description` | `string` | Description for the data source | `\"\"` | No |\n| `s3_inclusion_prefixes` | `list(string)` | S3 prefixes to include in data source | `[]` | No |\n| `chunking_strategy` | `string` | Document chunking strategy: 'FIXED_SIZE', 'NONE', or null | `null` | No |\n| `fixed_size_chunking_configuration` | `object` | Configuration for fixed-size chunking | `null` | No |\n| `fixed_size_chunking_configuration.max_tokens` | `number` | Maximum tokens per chunk | n/a | Conditional |\n| `fixed_size_chunking_configuration.overlap_percentage` | `number` | Percentage overlap between chunks (0-99) | n/a | Conditional |\n| `tags` | `map(string)` | Additional tags to apply to all resources | `{}` | No |\n\n### Variable Examples\n\n**Chunking Configuration**:\n\n```hcl\n# Fixed-size chunking with 512 tokens and 20% overlap\nchunking_strategy = \"FIXED_SIZE\"\nfixed_size_chunking_configuration = {\n  max_tokens         = 512\n  overlap_percentage = 20\n}\n\n# No chunking (use entire document)\nchunking_strategy = \"NONE\"\n\n# Default chunking (Bedrock decides)\nchunking_strategy = null\n```\n\n**S3 Inclusion Prefixes**:\n\n```hcl\n# Include only specific folders\ns3_inclusion_prefixes = [\n  \"public-docs/\",\n  \"knowledge-base/approved/\"\n]\n\n# Include all objects (default)\ns3_inclusion_prefixes = []\n```\n\n## Outputs\n\n| Output | Description | Example Value |\n|--------|-------------|---------------|\n| `knowledge_base_id` | ID of the Bedrock Knowledge Base | `ABCDEFGHIJ` |\n| `knowledge_base_arn` | ARN of the Bedrock Knowledge Base | `arn:aws:bedrock:ca-central-1:123456789012:knowledge-base/ABCDEFGHIJ` |\n| `knowledge_base_name` | Name of the Bedrock Knowledge Base | `alithya-prod-customer-support` |\n| `data_source_id` | ID of the Bedrock Data Source (if created) | `KLMNOPQRST` |\n| `s3_bucket_id` | ID of the S3 bucket | `alithya-prod-customer-support-kb-data` |\n| `s3_bucket_arn` | ARN of the S3 bucket | `arn:aws:s3:::alithya-prod-customer-support-kb-data` |\n| `opensearch_collection_id` | ID of the OpenSearch Serverless collection | `abcdefghijklmnopqrstuvwxyz` |\n| `opensearch_collection_arn` | ARN of the OpenSearch Serverless collection | `arn:aws:aoss:ca-central-1:123456789012:collection/abcdefghijklmnopqrstuvwxyz` |\n| `opensearch_collection_endpoint` | Endpoint URL for the OpenSearch collection | `https://abcdefghijklmnopqrstuvwxyz.ca-central-1.aoss.amazonaws.com` |\n| `iam_role_arn` | ARN of the IAM role used by the Knowledge Base | `arn:aws:iam::123456789012:role/alithya-prod-customer-support-kb-role` |\n| `iam_role_name` | Name of the IAM role | `alithya-prod-customer-support-kb-role` |\n\n### Using Outputs\n\nReference outputs in other Terraform configurations:\n\n```hcl\n# Reference the knowledge base in a Lambda function\nresource \"aws_lambda_function\" \"rag_api\" {\n  # ... other configuration ...\n  \n  environment {\n    variables = {\n      KNOWLEDGE_BASE_ID = module.bedrock_knowledge_base.knowledge_base_id\n      S3_BUCKET         = module.bedrock_knowledge_base.s3_bucket_id\n    }\n  }\n}\n\n# Grant additional access to the S3 bucket\nresource \"aws_iam_role_policy\" \"additional_access\" {\n  role = aws_iam_role.my_role.id\n\n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [\n      {\n        Effect = \"Allow\"\n        Action = [\"s3:GetObject\"]\n        Resource = \"${module.bedrock_knowledge_base.s3_bucket_arn}/*\"\n      }\n    ]\n  })\n}\n```\n\n## Security\n\nThis module implements comprehensive security controls aligned with Alithya's Landing Zone Accelerator requirements and AWS security best practices.\n\n### Encryption at Rest\n\n**S3 Bucket Encryption**:\n- Default: AES-256 encryption (SSE-S3)\n- Optional: Customer-managed KMS keys (SSE-KMS)\n- Bucket key enabled for KMS to reduce API calls and costs\n- Encryption enforced via bucket policy\n\n**OpenSearch Serverless Encryption**:\n- Default: AWS-owned encryption keys\n- Optional: Customer-managed KMS keys\n- Encryption policy applied at collection creation\n\n### Encryption in Transit\n\n**HTTPS Enforcement**:\n- S3 bucket policy denies all non-HTTPS requests\n- OpenSearch Serverless uses TLS 1.2+ for all connections\n- VPC endpoints use AWS PrivateLink (encrypted tunnels)\n\n```json\n{\n  \"Sid\": \"DenyInsecureTransport\",\n  \"Effect\": \"Deny\",\n  \"Principal\": \"*\",\n  \"Action\": \"s3:*\",\n  \"Condition\": {\n    \"Bool\": {\n      \"aws:SecureTransport\": \"false\"\n    }\n  }\n}\n```\n\n### Network Isolation\n\n**Private Access Only**:\n- OpenSearch Serverless collection accessible only via VPC endpoints\n- No public internet access to vector store\n- Network policy enforces VPC endpoint access\n\n**Security Group Requirements**:\n```hcl\n# Example security group for VPC endpoint\nresource \"aws_security_group\" \"opensearch_vpce\" {\n  name        = \"opensearch-serverless-vpce\"\n  description = \"Security group for OpenSearch Serverless VPC endpoint\"\n  vpc_id      = var.vpc_id\n\n  ingress {\n    from_port   = 443\n    to_port     = 443\n    protocol    = \"tcp\"\n    cidr_blocks = [var.vpc_cidr]\n    description = \"HTTPS from VPC\"\n  }\n\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n    description = \"Allow all outbound\"\n  }\n}\n```\n\n### IAM Security\n\n**Least Privilege Access**:\n- Knowledge Base role limited to specific S3 bucket and OpenSearch collection\n- Condition keys enforce account and source ARN restrictions\n- No wildcard permissions granted\n\n**Principal Restrictions**:\n```json\n{\n  \"Condition\": {\n    \"StringEquals\": {\n      \"aws:SourceAccount\": \"123456789012\"\n    },\n    \"ArnLike\": {\n      \"aws:SourceArn\": \"arn:aws:bedrock:ca-central-1:123456789012:knowledge-base/*\"\n    }\n  }\n}\n```\n\n**OpenSearch Access Control**:\n- Data access policies limit permissions to specific collections and indexes\n- Principal-based access (no public access)\n- Separate permissions for collection and index operations\n\n### S3 Security Controls\n\n**Public Access Prevention**:\n- Block all public ACLs\n- Block all public bucket policies\n- Ignore public ACLs\n- Restrict public buckets\n\n**Versioning**:\n- Enabled by default for data protection\n- Allows recovery from accidental deletions or overwrites\n- Supports compliance requirements\n\n**Bucket Policy Best Practices**:\n- Explicit deny for insecure transport\n- Account-level restrictions\n- No cross-account access without explicit configuration\n\n### LZA SCP Alignment\n\nThis module complies with standard LZA Service Control Policies:\n\n| SCP Requirement | Implementation |\n|-----------------|----------------|\n| **Encryption Required** | S3 server-side encryption enforced; OpenSearch encryption policy applied |\n| **No Public Access** | S3 public access blocked; OpenSearch private VPC endpoints only |\n| **HTTPS Only** | S3 bucket policy denies HTTP; OpenSearch uses TLS 1.2+ |\n| **Region Restriction** | Resources deployed only in ca-central-1 |\n| **Tagging Required** | All resources tagged with ManagedBy, Module, and custom tags |\n| **CloudTrail Logging** | All API calls logged to central CloudTrail (LZA baseline) |\n| **KMS Preferred** | Optional KMS encryption supported for both S3 and OpenSearch |\n\n### Security Monitoring\n\n**AWS Config Rules** (via LZA):\n- `s3-bucket-public-read-prohibited`\n- `s3-bucket-public-write-prohibited`\n- `s3-bucket-server-side-encryption-enabled`\n- `s3-bucket-ssl-requests-only`\n- `iam-policy-no-statements-with-admin-access`\n\n**GuardDuty Findings**:\n- Monitors for unusual API activity\n- Detects potential data exfiltration\n- Alerts on compromised credentials\n\n**Security Hub Controls**:\n- CIS AWS Foundations Benchmark\n- AWS Foundational Security Best Practices\n- PCI DSS (if applicable)\n\n### Secrets Management\n\n**No Hardcoded Credentials**:\n- IAM roles used for all service-to-service authentication\n- No API keys or passwords in code\n- Temporary credentials via STS AssumeRole\n\n**Sensitive Data Handling**:\n- Documents in S3 should be classified and encrypted appropriately\n- Consider using S3 Object Lock for immutable storage (compliance requirement)\n- Implement lifecycle policies for data retention\n\n## Cost Estimation\n\nEstimated monthly costs for a typical production deployment in **ca-central-1** (all prices in USD):\n\n### Base Infrastructure Costs\n\n| Service | Component | Usage | Monthly Cost |\n|---------|-----------|-------|--------------|\n| **Amazon Bedrock** | Knowledge Base | 1 knowledge base | $0.00 (no charge) |\n| **Amazon Bedrock** | Embedding Model (Titan) | 1M tokens/month | ~$0.10 |\n| **Amazon Bedrock** | Retrieval Queries | 10,000 queries/month | ~$0.10 |\n| **OpenSearch Serverless** | OCU (Indexing) | 2 OCU \u00d7 730 hours | $350.40 |\n| **OpenSearch Serverless** | OCU (Search) | 2 OCU \u00d7 730 hours | $350.40 |\n| **S3 Standard** | Storage | 100 GB | $2.50 |\n| **S3 Standard** | PUT Requests | 100,000 requests | $0.60 |\n| **S3 Standard** | GET Requests | 1,000,000 requests | $0.44 |\n| **VPC Endpoint** | OpenSearch Serverless | 730 hours | $7.30 |\n| **VPC Endpoint** | Data Transfer | 100 GB | $1.00 |\n| **KMS** | Customer-managed keys (optional) | 2 keys, 10,000 requests | $2.00 |\n\n**Total Estimated Monthly Cost: ~$715 USD**\n\n### Cost Breakdown by Scenario\n\n#### Small Development Environment\n- 1 OCU indexing, 1 OCU search\n- 10 GB S3 storage\n- 1,000 queries/month\n- **Estimated Cost: ~$180/month**\n\n#### Medium Production Environment\n- 2 OCU indexing, 2 OCU search\n- 100 GB S3 storage\n- 10,000 queries/month\n- **Estimated Cost: ~$715/month**\n\n#### Large Enterprise Environment\n- 4 OCU indexing, 4 OCU search\n- 500 GB S3 storage\n- 100,000 queries/month\n- **Estimated Cost: ~$1,450/month**\n\n### Cost Optimization Strategies\n\n1. **OpenSearch Serverless OCU Management**:\n   - OCUs are the primary cost driver (~98% of total cost)\n   - Start with minimum OCUs (1 indexing, 1 search) and scale based on performance\n   - Monitor `SearchOCU` and `IndexingOCU` CloudWatch metrics\n   - Consider scheduled scaling for predictable workloads\n\n2. **S3 Storage Optimization**:\n   ```hcl\n   # Add lifecycle policy to transition old versions to cheaper storage\n   resource \"aws_s3_bucket_lifecycle_configuration\" \"this\" {\n     bucket = aws_s3_bucket.this.id\n\n     rule {\n       id     = \"archive-old-versions\"\n       status = \"Enabled\"\n\n       noncurrent_version_transition {\n         noncurrent_days = 90\n         storage_class   = \"GLACIER\"\n       }\n\n       noncurrent_version_expiration {\n         noncurrent_days = 365\n       }\n     }\n   }\n   ```\n\n3. **Embedding Model Selection**:\n   - Titan Embed Text v1: $0.0001 per 1K tokens (most cost-effective)\n   - Cohere Embed: $0.0001 per 1K tokens\n   - Consider model performance vs. cost trade-offs\n\n4. **Query Optimization**:\n   - Implement caching for frequent queries\n   - Use appropriate chunk sizes to reduce embedding costs\n   - Batch document ingestion to minimize API calls\n\n5. **Development vs. Production**:\n   - Use separate knowledge bases for dev/test/prod\n   - Delete dev resources when not in use\n   - Consider using smaller embedding models for development\n\n### Cost Monitoring\n\n**Set up AWS Budgets**:\n```bash\naws budgets create-budget \\\n  --account-id 123456789012 \\\n  --budget file://budget.json \\\n  --notifications-with-subscribers file://notifications.json\n```\n\n**CloudWatch Cost Anomaly Detection**:\n- Enable for OpenSearch Serverless and Bedrock\n- Set alerts for >20% cost increases\n- Review weekly cost reports\n\n**Tagging for Cost Allocation**:\n```hcl\ntags = {\n  CostCenter  = \"engineering\"\n  Project     = \"customer-support-ai\"\n  Environment = \"production\"\n  Owner       = \"platform-team@alithya.com\"\n}\n```\n\n### Pricing References\n\n- [Amazon Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)\n- [OpenSearch Serverless Pricing](https://aws.amazon.com/opensearch-service/pricing/#Amazon_OpenSearch_Serverless)\n- [S3 Pricing](https://aws.amazon.com/s3/pricing/)\n- [VPC Endpoint Pricing](https://aws.amazon.com/privatelink/pricing/)\n\n**Note**: Prices are subject to change. Always refer to official AWS pricing pages for current rates. Costs may vary based on actual usage patterns.\n\n## Well-Architected Review\n\nThis module aligns with the AWS Well-Architected Framework across all six pillars:\n\n### Operational Excellence\n\n**Infrastructure as Code**:\n- \u2705 Complete Terraform automation\n- \u2705 Version-controlled configuration\n- \u2705 Repeatable deployments across environments\n\n**Monitoring and Observability**:\n```hcl\n# Recommended CloudWatch alarms\nresource \"aws_cloudwatch_metric_alarm\" \"opensearch_ocu_high\" {\n  alarm_name          = \"${var.name}-opensearch-ocu-high\"\n  comparison_operator = \"GreaterThanThreshold\"\n  evaluation_periods  = 2\n  metric_name         = \"SearchOCU\"\n  namespace           = \"AWS/AOSS\"\n  period              = 300\n  statistic           = \"Average\"\n  threshold           = 8\n  alarm_description   = \"OpenSearch OCU usage is high\"\n  \n  dimensions = {\n    CollectionId = aws_opensearchserverless_collection.this.id\n  }\n}\n```\n\n**Operational Procedures**:\n- Document ingestion via S3 upload\n- Automated ingestion jobs via Bedrock API\n- Rollback capability via S3 versioning\n\n### Security\n\n**Identity and Access Management**:\n- \u2705 Least privilege IAM roles\n- \u2705 Service-specific permissions\n- \u2705 Condition keys for additional security\n\n**Data Protection**:\n- \u2705 Encryption at rest (S3 and OpenSearch)\n- \u2705 Encryption in transit (HTTPS/TLS)\n- \u2705 S3 versioning for data recovery\n- \u2705 Optional customer-managed KMS keys\n\n**Network Security**:\n- \u2705 Private VPC endpoints for OpenSearch\n- \u2705 No public internet access\n- \u2705 Security group controls\n\n**Compliance**:\n- \u2705 CloudTrail logging (via LZA)\n- \u2705 AWS Config monitoring (via LZA)\n- \u2705 GuardDuty threat detection (via LZA)\n\n### Reliability\n\n**Fault Tolerance**:\n- \u2705 OpenSearch Serverless automatic scaling\n- \u2705 Multi-AZ deployment (OpenSearch Serverless default)\n- \u2705 S3 11 9's durability\n\n**Data Backup and Recovery**:\n- \u2705 S3 versioning enabled\n- \u2705 Cross-region replication (optional)\n- \u2705 Point-in-time recovery via versions\n\n**Change Management**:\n```hcl\n# Recommended: Use lifecycle policies\nlifecycle {\n  prevent_destroy = true  # Prevent accidental deletion\n}\n```\n\n**Monitoring**:\n- CloudWatch metrics for all services\n- Bedrock ingestion job status tracking\n- OpenSearch collection health monitoring\n\n### Performance Efficiency\n\n**Compute Optimization**:\n- \u2705 OpenSearch Serverless auto-scaling OCUs\n- \u2705 No server management required\n- \u2705 Optimized vector search algorithms\n\n**Storage Optimization**:\n- \u2705 S3 Standard for active data\n- \u2705 Lifecycle policies for archival\n- \u2705 Efficient vector storage in OpenSearch\n\n**Chunking Strategy**:\n```hcl\n# Optimize for your use case\nfixed_size_chunking_configuration = {\n  max_tokens         = 512  # Balance between context and precision\n  overlap_percentage = 20   # Prevent context loss at boundaries\n}\n```\n\n**Performance Monitoring**:\n- Query latency metrics\n- Embedding generation time\n- Retrieval accuracy (manual testing)\n\n### Cost Optimization\n\n**Right-Sizing**:\n- \u2705 Start with minimum OCUs\n- \u2705 Scale based on actual usage\n- \u2705 Monitor and adjust\n\n**Storage Optimization**:\n- \u2705 S3 lifecycle policies\n- \u2705 Intelligent-Tiering (optional)\n- \u2705 Delete unnecessary versions\n\n**Cost Monitoring**:\n- \u2705 Resource tagging for cost allocation\n- \u2705 AWS Cost Explorer integration\n- \u2705 Budget alerts\n\n**Reserved Capacity**:\n- Consider Savings Plans for predictable workloads\n- Evaluate commitment discounts for long-term projects\n\n### Sustainability\n\n**Resource Efficiency**:\n- \u2705 Serverless architecture (no idle resources)\n- \u2705 Auto-scaling reduces waste\n- \u2705 Efficient vector search algorithms\n\n**Data Lifecycle**:\n- \u2705 Automated archival of old data\n- \u2705 Deletion of unnecessary versions\n- \u2705 Optimized storage classes\n\n**Regional Considerations**:\n- ca-central-1 uses hydroelectric power (low carbon)\n- Reduced data transfer with regional deployment\n- Proximity to users reduces latency and energy\n\n## Compliance\n\nThis module is designed to meet Alithya's compliance requirements and industry standards within the Landing Zone Accelerator framework.\n\n### LZA Service Control Policy (SCP) Compliance\n\n| SCP Requirement | Implementation | Validation |\n|-----------------|----------------|------------|\n| **Encryption at Rest** | S3 SSE enabled; OpenSearch encryption policy | AWS Config: `s3-bucket-server-side-encryption-enabled` |\n| **Encryption in Transit** | S3 bucket policy denies HTTP; OpenSearch TLS 1.2+ | AWS Config: `s3-bucket-ssl-requests-only` |\n| **No Public Access** | S3 public access blocked; OpenSearch VPC endpoints only | AWS Config: `s3-bucket-public-read-prohibited` |\n| **Region Restriction** | All resources in ca-central-1 | SCP: `DenyAllOutsideAllowedRegions` |\n| **Required Tagging** | All resources tagged with ManagedBy, Module | AWS Config: `required-tags` |\n| **KMS Encryption Preferred** | Optional KMS keys for S3 and OpenSearch | Manual validation |\n| **VPC Endpoints Required** | OpenSearch accessible only via VPC endpoints | Network policy enforcement |\n| **CloudTrail Logging** | All API calls logged (LZA baseline) | CloudTrail event history |\n\n### Data Residency and Sovereignty\n\n**Canadian Data Residency**:\n- \u2705 All data stored in ca-central-1 (Montreal)\n- \u2705 No cross-border data transfer (unless explicitly configured)\n- \u2705 Compliant with Canadian privacy laws (PIPEDA)\n\n**Data Classification**:\n```hcl\n# Tag resources based on data classification\ntags = {\n  DataClassification = \"confidential\"  # public, internal, confidential, restricted\n  DataResidency      = \"canada\"\n  ComplianceScope\n",
       "BestPractices": "",
       "SecurityNotes": "",
       "RegistryType": "local"

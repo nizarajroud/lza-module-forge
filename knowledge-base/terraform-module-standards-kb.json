@@ -1,6 +1,6 @@
 {
   "documentType": "terraform-module-standards",
-  "extractedAt": "2026-07-07T14:39:02.319743+00:00",
+  "extractedAt": "2026-07-08T10:01:15.576995+00:00",
   "totalDocuments": 3,
   "description": "Organization standards for Terraform module development. ALL generated modules MUST comply with these standards. These define: file structure, naming conventions, variable patterns, security requirements, testing discipline, and versioning rules.",
   "standards": [
