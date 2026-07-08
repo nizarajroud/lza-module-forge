@@ -2,119 +2,119 @@
     <diagram id="architecture" name="LZA Module Forge">
         <mxGraphModel dx="1593" dy="627" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="920" pageHeight="760" math="0" shadow="0">
             <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-                <mxCell id="title" value="&lt;b&gt;LZA Module Forge — Architecture&lt;/b&gt;&lt;br&gt;Bedrock Agent + RAG + Lambda | ca-central-1 | July 2026" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="20" width="420" height="40" as="geometry"/>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="title" value="&lt;b&gt;LZA Module Forge &#8212; Architecture&lt;/b&gt;&lt;br&gt;Bedrock Agent + RAG + Lambda | ca-central-1 | July 2026" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="20" width="420" height="40" as="geometry" />
                 </mxCell>
                 <mxCell id="aws_cloud" value="AWS Account: Operations (026991214828) | ca-central-1" style="shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontStyle=1;fontSize=11;fontColor=#232F3E;container=1;dropTarget=1;" parent="1" vertex="1">
-                    <mxGeometry x="150" y="70" width="730" height="420" as="geometry"/>
+                    <mxGeometry x="150" y="70" width="730" height="420" as="geometry" />
                 </mxCell>
                 <mxCell id="agent" value="Bedrock Agent&lt;br&gt;(agent-lztf)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="40" y="80" width="65" height="65" as="geometry"/>
+                    <mxGeometry x="40" y="80" width="65" height="65" as="geometry" />
                 </mxCell>
                 <mxCell id="lambda" value="Lambda&lt;br&gt;(lza-terraform-generator)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="210" y="80" width="65" height="65" as="geometry"/>
+                    <mxGeometry x="210" y="80" width="65" height="65" as="geometry" />
                 </mxCell>
                 <mxCell id="claude" value="Claude Sonnet 4.5&lt;br&gt;(InvokeModel)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.machine_learning;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="390" y="80" width="65" height="65" as="geometry"/>
+                    <mxGeometry x="390" y="80" width="65" height="65" as="geometry" />
                 </mxCell>
                 <mxCell id="github" value="GitHub Repo&lt;br&gt;(aft-customizations)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="580" y="85" width="55" height="55" as="geometry"/>
+                    <mxGeometry x="580" y="85" width="55" height="55" as="geometry" />
                 </mxCell>
                 <mxCell id="kb" value="Knowledge Base&lt;br&gt;(RAG - 7NGH4NNDFC)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="210" y="260" width="65" height="65" as="geometry"/>
+                    <mxGeometry x="210" y="260" width="65" height="65" as="geometry" />
                 </mxCell>
                 <mxCell id="opensearch" value="OpenSearch&lt;br&gt;Serverless" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elasticsearch_service;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="390" y="260" width="65" height="65" as="geometry"/>
+                    <mxGeometry x="390" y="260" width="65" height="65" as="geometry" />
                 </mxCell>
                 <mxCell id="s3" value="S3 Bucket&lt;br&gt;(7 JSON docs)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="40" y="260" width="65" height="65" as="geometry"/>
+                    <mxGeometry x="40" y="260" width="65" height="65" as="geometry" />
                 </mxCell>
                 <mxCell id="cloudwatch" value="CloudWatch&lt;br&gt;Logs" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="580" y="260" width="60" height="60" as="geometry"/>
+                    <mxGeometry x="580" y="260" width="60" height="60" as="geometry" />
                 </mxCell>
                 <mxCell id="iam" value="IAM Roles" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_identity_and_compliance;" parent="aws_cloud" vertex="1">
-                    <mxGeometry x="580" y="165" width="55" height="55" as="geometry"/>
+                    <mxGeometry x="580" y="165" width="55" height="55" as="geometry" />
                 </mxCell>
                 <mxCell id="users" value="Cloud Architect" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.users;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="155" width="55" height="55" as="geometry"/>
+                    <mxGeometry x="40" y="155" width="55" height="55" as="geometry" />
                 </mxCell>
                 <mxCell id="data_pipeline" value="Data Pipeline (offline)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontSize=10;fontColor=#666666;container=1;dropTarget=1;" parent="1" vertex="1">
-                    <mxGeometry x="30" y="520" width="440" height="190" as="geometry"/>
+                    <mxGeometry x="30" y="520" width="440" height="190" as="geometry" />
                 </mxCell>
                 <mxCell id="lza_config" value="LZA Config&lt;br&gt;(YAML)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" parent="data_pipeline" vertex="1">
-                    <mxGeometry x="20" y="30" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="20" y="30" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="extractor_lza" value="extract_lza_config.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
-                    <mxGeometry x="130" y="32" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="130" y="32" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="tf_modules" value="TF Modules&lt;br&gt;(Registry/Manifest)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="data_pipeline">
-                    <mxGeometry x="20" y="105" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="20" y="105" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="extractor_tf" value="extract_tf_registry.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
-                    <mxGeometry x="130" y="107" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="130" y="107" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="json_docs" value="JSON Files&lt;br&gt;(knowledge-base/)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="data_pipeline">
-                    <mxGeometry x="230" y="62" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="230" y="62" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="sync" value="sync-kb.sh" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="data_pipeline">
-                    <mxGeometry x="340" y="68" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="340" y="68" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="ep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="lza_config" target="extractor_lza">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="ep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="extractor_lza" target="json_docs">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="ep3a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="tf_modules" target="extractor_tf">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="ep3b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="extractor_tf" target="json_docs">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="ep4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="data_pipeline" source="json_docs" target="sync">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="ep3" value="S3 + Ingest" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#666666;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="sync" target="s3">
                     <mxGeometry x="0.3" y="10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e1" value="Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#232F3E;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=1;enumerateValue=1;flowAnimation=1;" parent="1" source="users" target="agent" edge="1">
                     <mxGeometry x="0.3" y="-12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e2" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#232F3E;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=1;enumerateValue=2;flowAnimation=1;" parent="1" source="agent" target="lambda" edge="1">
                     <mxGeometry x="0.3" y="-12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e3" value="RAG" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#232F3E;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;enumerate=1;enumerateValue=3;flowAnimation=1;" parent="1" source="lambda" target="kb" edge="1">
                     <mxGeometry x="15" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e4" value="Generate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#232F3E;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=1;enumerateValue=4;flowAnimation=1;" parent="1" source="lambda" target="claude" edge="1">
                     <mxGeometry x="0.3" y="-12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e5" value="Commit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#232F3E;labelBackgroundColor=#F5F5F5;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=1;enumerateValue=5;flowAnimation=1;" parent="1" source="claude" target="github" edge="1">
                     <mxGeometry x="0.3" y="-12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#232F3E;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=0;" parent="1" source="s3" target="kb" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#232F3E;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=0;" parent="1" source="kb" target="opensearch" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="e10" value="Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#999999;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;enumerate=0;" parent="1" source="lambda" target="cloudwatch" edge="1">
                     <mxGeometry x="0.3" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
             </root>
@@ -123,90 +123,90 @@
     <diagram id="ecosystem" name="3-Repos Ecosystem">
         <mxGraphModel dx="900" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="950" pageHeight="720" math="0" shadow="0">
             <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-                <mxCell id="t2" value="&lt;b&gt;3-Repos Ecosystem — Module Generation Pipeline&lt;/b&gt;&lt;br&gt;How repos connect: LZA Config + TF Modules → KB → Agent → Generated Modules → Deployment" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="20" width="700" height="40" as="geometry"/>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="t2" value="&lt;b&gt;3-Repos Ecosystem &#8212; Module Generation Pipeline&lt;/b&gt;&lt;br&gt;How repos connect: LZA Config + TF Modules &#8594; KB &#8594; Agent &#8594; Generated Modules &#8594; Deployment" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="repo1_box" value="poc-bnc-terraform-modules (REPO 1 — Module Library)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="80" width="280" height="280" as="geometry"/>
+                <mxCell id="repo1_box" value="poc-bnc-terraform-modules (REPO 1 &#8212; Module Library)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="80" width="280" height="280" as="geometry" />
                 </mxCell>
-                <mxCell id="r1_guardrail" value="terraform-aws-&lt;br&gt;bedrock-guardrail&lt;br&gt;(v1.0.0 ✅)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo1_box">
-                    <mxGeometry x="20" y="50" width="48" height="48" as="geometry"/>
+                <mxCell id="r1_guardrail" value="terraform-aws-&lt;br&gt;bedrock-guardrail&lt;br&gt;(v1.0.0 &#9989;)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo1_box">
+                    <mxGeometry x="20" y="50" width="48" height="48" as="geometry" />
                 </mxCell>
-                <mxCell id="r1_kb_module" value="terraform-aws-&lt;br&gt;bedrock-kb&lt;br&gt;(🔲 planned)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo1_box">
-                    <mxGeometry x="20" y="145" width="48" height="48" as="geometry"/>
+                <mxCell id="r1_kb_module" value="terraform-aws-&lt;br&gt;bedrock-kb&lt;br&gt;(&#128306; planned)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo1_box">
+                    <mxGeometry x="20" y="145" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="r1_steering" value="steering/&lt;br&gt;(standards .md)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="repo1_box">
-                    <mxGeometry x="140" y="50" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="140" y="50" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="r1_sentinel" value="policies/&lt;br&gt;(Sentinel + SCP)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_identity_and_compliance;" vertex="1" parent="repo1_box">
-                    <mxGeometry x="140" y="145" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="140" y="145" width="48" height="48" as="geometry" />
                 </mxCell>
-                <mxCell id="generator_box" value="lza-module-forge (THIS REPO — Generator)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="370" y="80" width="250" height="280" as="geometry"/>
+                <mxCell id="generator_box" value="lza-module-forge (THIS REPO &#8212; Generator)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="370" y="80" width="250" height="280" as="geometry" />
                 </mxCell>
                 <mxCell id="g_extract" value="extract_tf_registry_v2.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="generator_box">
-                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="g_kb" value="Bedrock KB&lt;br&gt;(RAG)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" vertex="1" parent="generator_box">
-                    <mxGeometry x="100" y="50" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="100" y="50" width="50" height="50" as="geometry" />
                 </mxCell>
                 <mxCell id="g_agent" value="Bedrock Agent&lt;br&gt;+ Lambda" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="generator_box">
-                    <mxGeometry x="100" y="150" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="100" y="150" width="50" height="50" as="geometry" />
                 </mxCell>
                 <mxCell id="g_claude" value="Claude Sonnet 4.5" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.machine_learning;" vertex="1" parent="generator_box">
-                    <mxGeometry x="185" y="150" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="185" y="150" width="50" height="50" as="geometry" />
                 </mxCell>
-                <mxCell id="repo2_box" value="poc-bnc-bedrock-deployment (REPO 2 — Consumer/Deployment)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#8C4FFF;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#8C4FFF;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="670" y="80" width="250" height="280" as="geometry"/>
+                <mxCell id="repo2_box" value="poc-bnc-bedrock-deployment (REPO 2 &#8212; Consumer/Deployment)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#8C4FFF;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#8C4FFF;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="80" width="250" height="280" as="geometry" />
                 </mxCell>
                 <mxCell id="r2_lab" value="environments/lab" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo2_box">
-                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="r2_dev" value="environments/dev" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo2_box">
-                    <mxGeometry x="100" y="50" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="100" y="50" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="r2_prod" value="environments/prod" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="repo2_box">
-                    <mxGeometry x="180" y="50" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="180" y="50" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="r2_ghactions" value="GitHub Actions&lt;br&gt;(plan/apply)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="repo2_box">
-                    <mxGeometry x="100" y="150" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="100" y="150" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="r2_aws" value="AWS Accounts&lt;br&gt;(multi-account)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=#232F3E;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.group_aws_cloud_alt;" vertex="1" parent="repo2_box">
-                    <mxGeometry x="20" y="155" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="20" y="155" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="e_r1_to_gen" value="Parsed as&lt;br&gt;KB reference" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3F8624;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="repo1_box" target="generator_box">
                     <mxGeometry x="0.2" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e_gen_to_r1" value="Generates new&lt;br&gt;modules" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#01A88D;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="generator_box" target="repo1_box">
                     <mxGeometry x="0.2" y="12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e_r1_to_r2" value="module source&lt;br&gt;(Terraform Registry)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#8C4FFF;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r1_guardrail" target="repo2_box">
                     <mxGeometry x="0.4" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="lza_box" value="aws-accelerator-config (LZA)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#ED7100;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="420" width="280" height="90" as="geometry"/>
+                    <mxGeometry x="40" y="420" width="280" height="90" as="geometry" />
                 </mxCell>
                 <mxCell id="lza_files" value="accounts-config.yaml | network-config.yaml&lt;br&gt;security-config.yaml | iam-config.yaml | SCPs" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#666666;" vertex="1" parent="1">
-                    <mxGeometry x="55" y="450" width="250" height="40" as="geometry"/>
+                    <mxGeometry x="55" y="450" width="250" height="40" as="geometry" />
                 </mxCell>
                 <mxCell id="e_lza_to_gen" value="extract_lza_config.py" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#ED7100;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.85;entryDx=0;entryDy=0;" edge="1" parent="1" source="lza_box" target="generator_box">
                     <mxGeometry x="0.3" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br&gt;── Solid: runtime data flow&lt;br&gt;- - Dashed: generated output&lt;br&gt;🟢 REPO 1: Module library (source of truth)&lt;br&gt;🟣 REPO 2: Deployment consumer&lt;br&gt;🟠 LZA: Org context&lt;br&gt;🔵 THIS REPO: Generator (Bedrock Agent)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
-                    <mxGeometry x="670" y="420" width="250" height="120" as="geometry"/>
+                <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br&gt;&#9472;&#9472; Solid: runtime data flow&lt;br&gt;- - Dashed: generated output&lt;br&gt;&#128994; REPO 1: Module library (source of truth)&lt;br&gt;&#128995; REPO 2: Deployment consumer&lt;br&gt;&#128992; LZA: Org context&lt;br&gt;&#128309; THIS REPO: Generator (Bedrock Agent)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="420" width="250" height="120" as="geometry" />
                 </mxCell>
-                <mxCell id="flow_label" value="&lt;b&gt;Flow:&lt;/b&gt; Existing modules (REPO 1) + LZA config → feed KB → Agent generates NEW modules → committed back to REPO 1 → consumed by REPO 2 for deployment" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#444444;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="560" width="880" height="35" as="geometry"/>
+                <mxCell id="flow_label" value="&lt;b&gt;Flow:&lt;/b&gt; Existing modules (REPO 1) + LZA config &#8594; feed KB &#8594; Agent generates NEW modules &#8594; committed back to REPO 1 &#8594; consumed by REPO 2 for deployment" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#444444;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="560" width="880" height="35" as="geometry" />
                 </mxCell>
             </root>
         </mxGraphModel>
@@ -215,87 +215,87 @@
     <diagram id="alth-ecosystem" name="ALTH-3-Repos Ecosystem">
         <mxGraphModel dx="900" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="950" pageHeight="720" math="0" shadow="0">
             <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-                <mxCell id="at2" value="&lt;b&gt;ALTH-3-Repos Ecosystem — Alithya Landing Zone Simulation&lt;/b&gt;&lt;br&gt;Module Generation → Deployment on Alithya Sandbox (747814092865) | ca-central-1" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="20" width="750" height="40" as="geometry"/>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="at2" value="&lt;b&gt;ALTH-3-Repos Ecosystem &#8212; Alithya Landing Zone Simulation&lt;/b&gt;&lt;br&gt;Module Generation &#8594; Deployment on Alithya Sandbox (747814092865) | ca-central-1" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="20" width="750" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="a_repo1_box" value="poc-bnc-terraform-modules (REPO 1 — Module Library)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="80" width="280" height="280" as="geometry"/>
+                <mxCell id="a_repo1_box" value="poc-bnc-terraform-modules (REPO 1 &#8212; Module Library)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="80" width="280" height="280" as="geometry" />
                 </mxCell>
-                <mxCell id="a_r1_guardrail" value="terraform-aws-&lt;br&gt;bedrock-guardrail&lt;br&gt;(v1.0.0 ✅)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="a_repo1_box">
-                    <mxGeometry x="20" y="50" width="48" height="48" as="geometry"/>
+                <mxCell id="a_r1_guardrail" value="terraform-aws-&lt;br&gt;bedrock-guardrail&lt;br&gt;(v1.0.0 &#9989;)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="a_repo1_box">
+                    <mxGeometry x="20" y="50" width="48" height="48" as="geometry" />
                 </mxCell>
-                <mxCell id="a_r1_kb_module" value="terraform-aws-&lt;br&gt;bedrock-kb&lt;br&gt;(🔲 planned)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="a_repo1_box">
-                    <mxGeometry x="20" y="145" width="48" height="48" as="geometry"/>
+                <mxCell id="a_r1_kb_module" value="terraform-aws-&lt;br&gt;bedrock-kb&lt;br&gt;(&#128306; planned)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="a_repo1_box">
+                    <mxGeometry x="20" y="145" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="a_r1_steering" value="steering/&lt;br&gt;(standards .md)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.documents;" vertex="1" parent="a_repo1_box">
-                    <mxGeometry x="140" y="50" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="140" y="50" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="a_r1_sentinel" value="policies/&lt;br&gt;(Sentinel + SCP)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_identity_and_compliance;" vertex="1" parent="a_repo1_box">
-                    <mxGeometry x="140" y="145" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="140" y="145" width="48" height="48" as="geometry" />
                 </mxCell>
-                <mxCell id="a_generator_box" value="lza-module-forge (THIS REPO — Generator)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="370" y="80" width="250" height="280" as="geometry"/>
+                <mxCell id="a_generator_box" value="lza-module-forge (THIS REPO &#8212; Generator)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="370" y="80" width="250" height="280" as="geometry" />
                 </mxCell>
                 <mxCell id="a_g_extract" value="extract_tf_registry_v2.py" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="a_generator_box">
-                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="a_g_kb" value="Bedrock KB&lt;br&gt;(RAG)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" vertex="1" parent="a_generator_box">
-                    <mxGeometry x="100" y="50" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="100" y="50" width="50" height="50" as="geometry" />
                 </mxCell>
                 <mxCell id="a_g_agent" value="Bedrock Agent&lt;br&gt;+ Lambda" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="a_generator_box">
-                    <mxGeometry x="100" y="150" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="100" y="150" width="50" height="50" as="geometry" />
                 </mxCell>
                 <mxCell id="a_g_claude" value="Claude Sonnet 4.5" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.machine_learning;" vertex="1" parent="a_generator_box">
-                    <mxGeometry x="185" y="150" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="185" y="150" width="50" height="50" as="geometry" />
                 </mxCell>
-                <mxCell id="a_repo2_box" value="alth-poc-bnc-bedrock-deployment (REPO 2 — LZ Simulation)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#8C4FFF;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#8C4FFF;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="670" y="80" width="250" height="280" as="geometry"/>
+                <mxCell id="a_repo2_box" value="alth-poc-bnc-bedrock-deployment (REPO 2 &#8212; LZ Simulation)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#8C4FFF;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#8C4FFF;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="80" width="250" height="280" as="geometry" />
                 </mxCell>
                 <mxCell id="a_r2_sandbox" value="environments/sandbox&lt;br&gt;(747814092865)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.source_code;" vertex="1" parent="a_repo2_box">
-                    <mxGeometry x="90" y="50" width="48" height="48" as="geometry"/>
+                    <mxGeometry x="90" y="50" width="48" height="48" as="geometry" />
                 </mxCell>
                 <mxCell id="a_r2_ghactions" value="GitHub Actions&lt;br&gt;(plan/apply/destroy)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.gear;" vertex="1" parent="a_repo2_box">
-                    <mxGeometry x="20" y="150" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="20" y="150" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="a_r2_aws" value="Alithya Sandbox&lt;br&gt;(ca-central-1)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" vertex="1" parent="a_repo2_box">
-                    <mxGeometry x="130" y="150" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="130" y="150" width="50" height="50" as="geometry" />
                 </mxCell>
                 <mxCell id="a_r2_oidc" value="OIDC + IAM Role&lt;br&gt;(TerraformDeployRole)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_identity_and_compliance;" vertex="1" parent="a_repo2_box">
-                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry"/>
+                    <mxGeometry x="20" y="50" width="44" height="44" as="geometry" />
                 </mxCell>
                 <mxCell id="a_e_r1_to_gen" value="Parsed as&lt;br&gt;KB reference" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3F8624;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_repo1_box" target="a_generator_box">
                     <mxGeometry x="0.2" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="a_e_gen_to_r1" value="Generates new&lt;br&gt;modules" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#01A88D;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_generator_box" target="a_repo1_box">
                     <mxGeometry x="0.2" y="12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="a_e_r1_to_r2" value="module source&lt;br&gt;(TF Registry v1.0.0)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#8C4FFF;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_r1_guardrail" target="a_repo2_box">
                     <mxGeometry x="0.4" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="a_lza_box" value="aws-accelerator-config (Alithya LZA — 957201034306)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#ED7100;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="420" width="280" height="90" as="geometry"/>
+                <mxCell id="a_lza_box" value="aws-accelerator-config (Alithya LZA &#8212; 957201034306)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#ED7100;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="420" width="280" height="90" as="geometry" />
                 </mxCell>
                 <mxCell id="a_lza_files" value="SCPs: region-lock ca-central-1 | encryption mandatory&lt;br&gt;Tags: CostCenter, MaintainersTeam=IO | VPC: 10.x.x.x" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#666666;" vertex="1" parent="1">
-                    <mxGeometry x="55" y="452" width="250" height="40" as="geometry"/>
+                    <mxGeometry x="55" y="452" width="250" height="40" as="geometry" />
                 </mxCell>
                 <mxCell id="a_e_lza_to_gen" value="extract_lza_config.py" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#ED7100;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.85;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_lza_box" target="a_generator_box">
                     <mxGeometry x="0.3" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                        <mxPoint as="offset" />
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="a_legend" value="&lt;b&gt;ALTH Context&lt;/b&gt;&lt;br&gt;• Single Sandbox account (747814092865)&lt;br&gt;• Region: ca-central-1 (LZ enforced)&lt;br&gt;• OIDC: GitHub Actions → TerraformDeployRole&lt;br&gt;• Tags: alth- prefix, CostCenter mandatory&lt;br&gt;• PII: BLOCK (stricter than dev)&lt;br&gt;• Denied topics: CompetitorDiscussion" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
-                    <mxGeometry x="670" y="420" width="250" height="130" as="geometry"/>
+                <mxCell id="a_legend" value="&lt;b&gt;ALTH Context&lt;/b&gt;&lt;br&gt;&#8226; Single Sandbox account (747814092865)&lt;br&gt;&#8226; Region: ca-central-1 (LZ enforced)&lt;br&gt;&#8226; OIDC: GitHub Actions &#8594; TerraformDeployRole&lt;br&gt;&#8226; Tags: alth- prefix, CostCenter mandatory&lt;br&gt;&#8226; PII: BLOCK (stricter than dev)&lt;br&gt;&#8226; Denied topics: CompetitorDiscussion" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="420" width="250" height="130" as="geometry" />
                 </mxCell>
-                <mxCell id="a_flow_label" value="&lt;b&gt;Flow:&lt;/b&gt; Existing modules (REPO 1) + Alithya LZA config → feed KB → Agent generates conformant modules → committed to REPO 1 → consumed by alth-poc (REPO 2) → deployed to Alithya Sandbox via GitHub Actions OIDC" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#444444;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="570" width="880" height="35" as="geometry"/>
+                <mxCell id="a_flow_label" value="&lt;b&gt;Flow:&lt;/b&gt; Existing modules (REPO 1) + Alithya LZA config &#8594; feed KB &#8594; Agent generates conformant modules &#8594; committed to REPO 1 &#8594; consumed by alth-poc (REPO 2) &#8594; deployed to Alithya Sandbox via GitHub Actions OIDC" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#444444;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="570" width="880" height="35" as="geometry" />
                 </mxCell>
             </root>
         </mxGraphModel>
@@ -304,106 +304,89 @@
     <diagram id="module-comparison" name="Module Comparison">
         <mxGraphModel dx="1100" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="780" math="0" shadow="0">
             <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
                 <mxCell id="ct" value="&lt;b&gt;Module Comparison: Manual vs LZA-Generated&lt;/b&gt;&lt;br&gt;terraform-aws-bedrock-guardrail (manual) vs terraform-aws-bedrock-guardrail-lza (generated)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="20" width="700" height="40" as="geometry"/>
+                    <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="manual_box" value="terraform-aws-bedrock-guardrail (MANUAL — v1.0.0)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="80" width="480" height="330" as="geometry"/>
+                <mxCell id="manual_box" value="terraform-aws-bedrock-guardrail (MANUAL &#8212; v1.0.0)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#3F8624;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="80" width="480" height="330" as="geometry" />
                 </mxCell>
-                <mxCell id="m_files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;• main.tf (guardrail + version)&lt;br&gt;• variables.tf (12 vars, validations)&lt;br&gt;• outputs.tf (5 outputs)&lt;br&gt;• versions.tf (&gt;= 5.60.0)&lt;br&gt;• README.md&lt;br&gt;• examples/complete/main.tf&lt;br&gt;• tests/" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
-                    <mxGeometry x="10" y="35" width="220" height="130" as="geometry"/>
+                <mxCell id="m_files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;&#8226; main.tf (guardrail + version)&lt;br&gt;&#8226; variables.tf (12 vars, validations)&lt;br&gt;&#8226; outputs.tf (5 outputs)&lt;br&gt;&#8226; versions.tf (&gt;= 5.60.0)&lt;br&gt;&#8226; README.md&lt;br&gt;&#8226; examples/complete/main.tf&lt;br&gt;&#8226; tests/" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
+                    <mxGeometry x="10" y="35" width="220" height="130" as="geometry" />
                 </mxCell>
-                <mxCell id="m_resources" value="&lt;b&gt;Resources&lt;/b&gt;&lt;br&gt;• aws_bedrock_guardrail.this&lt;br&gt;• aws_bedrock_guardrail_version.this&lt;br&gt;&lt;br&gt;(2 resources total — pure module)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
-                    <mxGeometry x="250" y="35" width="220" height="100" as="geometry"/>
+                <mxCell id="m_resources" value="&lt;b&gt;Resources&lt;/b&gt;&lt;br&gt;&#8226; aws_bedrock_guardrail.this&lt;br&gt;&#8226; aws_bedrock_guardrail_version.this&lt;br&gt;&lt;br&gt;(2 resources total &#8212; pure module)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
+                    <mxGeometry x="250" y="35" width="220" height="100" as="geometry" />
                 </mxCell>
-                <mxCell id="m_features" value="&lt;b&gt;Features&lt;/b&gt;&lt;br&gt;• Content filters (6 types)&lt;br&gt;• PII entities (configurable)&lt;br&gt;• Denied topics&lt;br&gt;• Word filters + managed lists&lt;br&gt;• KMS encryption (optional)&lt;br&gt;• Validation blocks on inputs&lt;br&gt;• No provider block inside module" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
-                    <mxGeometry x="10" y="170" width="220" height="140" as="geometry"/>
+                <mxCell id="m_features" value="&lt;b&gt;Features&lt;/b&gt;&lt;br&gt;&#8226; Content filters (6 types)&lt;br&gt;&#8226; PII entities (configurable)&lt;br&gt;&#8226; Denied topics&lt;br&gt;&#8226; Word filters + managed lists&lt;br&gt;&#8226; KMS encryption (optional)&lt;br&gt;&#8226; Validation blocks on inputs&lt;br&gt;&#8226; No provider block inside module" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="manual_box">
+                    <mxGeometry x="10" y="170" width="220" height="140" as="geometry" />
                 </mxCell>
-                <mxCell id="m_absent" value="&lt;b&gt;NOT included&lt;/b&gt;&lt;br&gt;• No LZA tags in module&lt;br&gt;• No CloudWatch alarms&lt;br&gt;• No S3 logging bucket&lt;br&gt;• No IAM roles/policies&lt;br&gt;• No data sources (pure module)&lt;br&gt;• Consumer manages provider+tags" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#DD344C;" vertex="1" parent="manual_box">
-                    <mxGeometry x="250" y="170" width="220" height="140" as="geometry"/>
+                <mxCell id="m_absent" value="&lt;b&gt;NOT included&lt;/b&gt;&lt;br&gt;&#8226; No LZA tags in module&lt;br&gt;&#8226; No CloudWatch alarms&lt;br&gt;&#8226; No S3 logging bucket&lt;br&gt;&#8226; No IAM roles/policies&lt;br&gt;&#8226; No data sources (pure module)&lt;br&gt;&#8226; Consumer manages provider+tags" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fontColor=#DD344C;" vertex="1" parent="manual_box">
+                    <mxGeometry x="250" y="170" width="220" height="140" as="geometry" />
                 </mxCell>
-                <mxCell id="gen_box" value="terraform-aws-bedrock-guardrail-lza (GENERATED — LZA-augmented)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
-                    <mxGeometry x="560" y="80" width="500" height="330" as="geometry"/>
+                <mxCell id="gen_box" value="terraform-aws-bedrock-guardrail-lza (GENERATED &#8212; LZA-augmented)" style="whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=#01A88D;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;fontStyle=1;fontColor=#01A88D;container=1;dropTarget=1;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="80" width="500" height="330" as="geometry" />
                 </mxCell>
-                <mxCell id="g_files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;• main.tf (all-in-one: resources + vars + outputs)&lt;br&gt;• README.md (28KB — full docs)&lt;br&gt;• examples/complete/ (dir created)&lt;br&gt;• tests/ (dir created)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
-                    <mxGeometry x="10" y="35" width="230" height="100" as="geometry"/>
+                <mxCell id="g_files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;&#8226; main.tf (all-in-one: resources + vars + outputs)&lt;br&gt;&#8226; README.md (28KB &#8212; full docs)&lt;br&gt;&#8226; examples/complete/ (dir created)&lt;br&gt;&#8226; tests/ (dir created)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
+                    <mxGeometry x="10" y="35" width="230" height="100" as="geometry" />
                 </mxCell>
-                <mxCell id="g_resources" value="&lt;b&gt;Resources (9+)&lt;/b&gt;&lt;br&gt;• aws_bedrock_guardrail.main&lt;br&gt;• aws_bedrock_guardrail_version&lt;br&gt;• aws_cloudwatch_log_group&lt;br&gt;• aws_cloudwatch_metric_alarm ×2&lt;br&gt;• aws_iam_role (logging)&lt;br&gt;• aws_iam_role_policy (logging)&lt;br&gt;• aws_iam_policy (usage)&lt;br&gt;• module s3-bucket (logs)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
-                    <mxGeometry x="260" y="35" width="230" height="140" as="geometry"/>
+                <mxCell id="g_resources" value="&lt;b&gt;Resources (9+)&lt;/b&gt;&lt;br&gt;&#8226; aws_bedrock_guardrail.main&lt;br&gt;&#8226; aws_bedrock_guardrail_version&lt;br&gt;&#8226; aws_cloudwatch_log_group&lt;br&gt;&#8226; aws_cloudwatch_metric_alarm &#215;2&lt;br&gt;&#8226; aws_iam_role (logging)&lt;br&gt;&#8226; aws_iam_role_policy (logging)&lt;br&gt;&#8226; aws_iam_policy (usage)&lt;br&gt;&#8226; module s3-bucket (logs)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
+                    <mxGeometry x="260" y="35" width="230" height="140" as="geometry" />
                 </mxCell>
-                <mxCell id="g_lza" value="&lt;b&gt;LZA-Specific (from KB)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#01A88D&quot;&gt;✓ Tags: clientName=Alithya, CSNA, CostCenter&lt;br&gt;✓ Region: ca-central-1 (hardcoded)&lt;br&gt;✓ KMS: data.aws_kms_key (existing LZA key)&lt;br&gt;✓ Naming: alithya-bedrock-guardrail&lt;br&gt;✓ PII: CA_SOCIAL_INSURANCE_NUMBER&lt;br&gt;✓ Topics: financial/medical/legal advice&lt;br&gt;✓ S3 logs: encryption + HTTPS enforced&lt;br&gt;✓ CloudWatch alarms (blocks + errors)&lt;br&gt;✓ IAM: least-privilege + condition keys&lt;br&gt;✓ Data sources: Endpoint VPC, KMS key&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
-                    <mxGeometry x="10" y="150" width="480" height="160" as="geometry"/>
+                <mxCell id="g_lza" value="&lt;b&gt;LZA-Specific (from KB)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#01A88D&quot;&gt;&#10003; Tags: clientName=Alithya, CSNA, CostCenter&lt;br&gt;&#10003; Region: ca-central-1 (hardcoded)&lt;br&gt;&#10003; KMS: data.aws_kms_key (existing LZA key)&lt;br&gt;&#10003; Naming: alithya-bedrock-guardrail&lt;br&gt;&#10003; PII: CA_SOCIAL_INSURANCE_NUMBER&lt;br&gt;&#10003; Topics: financial/medical/legal advice&lt;br&gt;&#10003; S3 logs: encryption + HTTPS enforced&lt;br&gt;&#10003; CloudWatch alarms (blocks + errors)&lt;br&gt;&#10003; IAM: least-privilege + condition keys&lt;br&gt;&#10003; Data sources: Endpoint VPC, KMS key&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;" vertex="1" parent="gen_box">
+                    <mxGeometry x="10" y="150" width="480" height="160" as="geometry" />
                 </mxCell>
                 <mxCell id="arrow_diff" value="&lt;b&gt;KEY DIFFERENCE&lt;/b&gt;&lt;br&gt;Manual = pure reusable module (no org context)&lt;br&gt;Generated = deployment-ready with LZA constraints baked in" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=10;spacing=4;fillColor=#FFF3CD;strokeColor=#ED7100;" vertex="1" parent="1">
-                    <mxGeometry x="250" y="440" width="600" height="50" as="geometry"/>
+                    <mxGeometry x="250" y="440" width="600" height="50" as="geometry" />
                 </mxCell>
-                <mxCell id="legend_c" value="&lt;b&gt;Source&lt;/b&gt;&lt;br&gt;🟢 Manual: written by hand following steering/*.md&lt;br&gt;🔵 Generated: produced by Bedrock Agent with LZA KB context (RAG-augmented)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="510" width="450" height="60" as="geometry"/>
+                <mxCell id="legend_c" value="&lt;b&gt;Source&lt;/b&gt;&lt;br&gt;&#128994; Manual: written by hand following steering/*.md&lt;br&gt;&#128309; Generated: produced by Bedrock Agent with LZA KB context (RAG-augmented)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacing=4;fillColor=#F5F5F5;strokeColor=#E0E0E0;rounded=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="510" width="450" height="60" as="geometry" />
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
-    <diagram id="nav" name="Navigation Map (Clickable)">
-        <mxGraphModel dx="850" dy="550" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="550" math="0" shadow="0">
+        <diagram id="nav" name="Navigation Map (Clickable)">
+        <mxGraphModel dx="850" dy="480" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="480" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <UserObject label="&lt;b&gt;Ecosystem Navigation Map&lt;/b&gt;&lt;br&gt;Click any box to open its detailed architecture" id="nav_title">
+                <UserObject label="&lt;b&gt;Ecosystem — 3 Components&lt;/b&gt;&lt;br&gt;Click any box to open its detailed architecture" id="nav_title">
                     <mxCell style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;spacing=6;" vertex="1" parent="1">
-                        <mxGeometry x="40" y="20" width="500" height="40" as="geometry"/>
+                        <mxGeometry x="40" y="20" width="450" height="40" as="geometry"/>
                     </mxCell>
                 </UserObject>
-                <UserObject label="&lt;b&gt;poc-bnc-terraform-modules&lt;/b&gt;&lt;br&gt;&lt;br&gt;Module Library (source of truth)&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• terraform-aws-bedrock-guardrail (v1.0.0 ✅)&lt;br&gt;• terraform-aws-bedrock-kb (v1.0.0 ✅)&lt;br&gt;• steering/ (standards)&lt;br&gt;• policies/ (Sentinel + SCP)&lt;/font&gt;" link="../../poc-bnc-terraform-modules/modules/terraform-aws-bedrock-knowledge-base/docs/module-architecture.drawio" id="nav_repo1">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#3F8624;strokeWidth=2;fontSize=10;align=center;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
-                        <mxGeometry x="40" y="90" width="220" height="170" as="geometry"/>
+                <UserObject label="&lt;b&gt;terraform-aws-bedrock-knowledge-base&lt;/b&gt;&lt;br&gt;&lt;br&gt;Terraform Module&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• S3 bucket (encrypted, HTTPS-only)&lt;br&gt;• OpenSearch Serverless (vector store)&lt;br&gt;• IAM role (least privilege)&lt;br&gt;• Bedrock Knowledge Base&lt;br&gt;• Data Source + chunking config&lt;br&gt;• Vector index (local-exec)&lt;/font&gt;" link="../../poc-bnc-terraform-modules/modules/terraform-aws-bedrock-knowledge-base/docs/module-architecture.drawio" id="nav_module">
+                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#3F8624;strokeWidth=3;fontSize=10;align=center;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+                        <mxGeometry x="40" y="80" width="240" height="195" as="geometry"/>
                     </mxCell>
                 </UserObject>
-                <UserObject label="&lt;b&gt;lza-module-forge&lt;/b&gt;&lt;br&gt;&lt;br&gt;Generator Engine (THIS REPO)&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• Bedrock Agent + Lambda&lt;br&gt;• Knowledge Base (RAG)&lt;br&gt;• extract_lza_config.py&lt;br&gt;• extract_tf_registry_v2.py&lt;br&gt;• sync-kb.sh&lt;/font&gt;" link="#architecture" id="nav_generator">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D4E1F5;strokeColor=#01A88D;strokeWidth=2;fontSize=10;align=center;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
-                        <mxGeometry x="310" y="90" width="220" height="170" as="geometry"/>
+                <UserObject label="&lt;b&gt;lza-module-forge&lt;/b&gt;&lt;br&gt;&lt;br&gt;Generator Engine&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• Bedrock Agent + Lambda&lt;br&gt;• Knowledge Base (RAG)&lt;br&gt;• Claude Sonnet 4.5&lt;br&gt;• extract_lza_config.py&lt;br&gt;• extract_tf_registry_v2.py&lt;br&gt;• sync-kb.sh&lt;/font&gt;" link="#architecture" id="nav_forge">
+                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D4E1F5;strokeColor=#01A88D;strokeWidth=3;fontSize=10;align=center;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+                        <mxGeometry x="330" y="80" width="200" height="195" as="geometry"/>
                     </mxCell>
                 </UserObject>
-                <UserObject label="&lt;b&gt;poc-bnc-bedrock-deployment&lt;/b&gt;&lt;br&gt;&lt;br&gt;Consumer / Deployment&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• environments/ (lab, dev, staging, prod)&lt;br&gt;• GitHub Actions CI/CD&lt;br&gt;• Multi-account (assume-role)&lt;br&gt;• Consumes modules from REPO 1&lt;/font&gt;" link="../../poc-bnc-bedrock-deployment/docs/architecture/poc-bnc-terraform-architecture.drawio" id="nav_repo2">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#8C4FFF;strokeWidth=2;fontSize=10;align=center;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
-                        <mxGeometry x="580" y="90" width="220" height="170" as="geometry"/>
+                <UserObject label="&lt;b&gt;poc-bnc-bedrock-deployment&lt;/b&gt;&lt;br&gt;&lt;br&gt;Deployment (Consumer)&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• environments/ (lab, dev, staging, prod)&lt;br&gt;• GitHub Actions (plan/apply)&lt;br&gt;• Multi-account (assume-role)&lt;br&gt;• Consumes module via TF Registry&lt;/font&gt;" link="../../poc-bnc-bedrock-deployment/docs/architecture/poc-bnc-terraform-architecture.drawio" id="nav_deploy">
+                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#8C4FFF;strokeWidth=3;fontSize=10;align=center;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+                        <mxGeometry x="580" y="80" width="230" height="195" as="geometry"/>
                     </mxCell>
                 </UserObject>
-                <UserObject label="&lt;b&gt;aws-accelerator-config&lt;/b&gt;&lt;br&gt;&lt;br&gt;LZA Configuration&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• accounts-config.yaml&lt;br&gt;• network-config.yaml&lt;br&gt;• security-config.yaml&lt;br&gt;• service-control-policies/&lt;/font&gt;" link="https://github.com/nizarajroud/aws-accelerator-config" id="nav_lza">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontSize=10;align=center;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
-                        <mxGeometry x="40" y="330" width="220" height="150" as="geometry"/>
-                    </mxCell>
-                </UserObject>
-                <UserObject label="&lt;b&gt;AWS Operations Account&lt;/b&gt;&lt;br&gt;(026991214828)&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#666&quot;&gt;• Bedrock Agent (agent-lztf)&lt;br&gt;• Lambda (lza-terraform-generator)&lt;br&gt;• KB (7NGH4NNDFC)&lt;br&gt;• AOSS Collection&lt;br&gt;• S3 KB Bucket&lt;/font&gt;" link="https://ca-central-1.console.aws.amazon.com/bedrock/home?region=ca-central-1#/agents/7R6JXTKLR6" id="nav_aws">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#232F3E;strokeWidth=2;fontSize=10;align=center;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
-                        <mxGeometry x="310" y="330" width="220" height="150" as="geometry"/>
-                    </mxCell>
-                </UserObject>
-                <mxCell id="nav_e1" value="Parsed as KB reference" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3F8624;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_repo1" target="nav_generator">
-                    <mxGeometry x="0.2" y="-10" relative="1" as="geometry">
+                <mxCell id="nav_e1" value="Generates module" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#01A88D;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_forge" target="nav_module">
+                    <mxGeometry x="0.2" y="-12" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="nav_e2" value="Generates new modules" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#01A88D;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_generator" target="nav_repo1">
+                <mxCell id="nav_e2" value="module source = &quot;nizarajroud/bedrock-guardrail/aws&quot;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#8C4FFF;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_module" target="nav_deploy">
+                    <mxGeometry x="0.5" y="-12" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="nav_e3" value="Existing module patterns → KB" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3F8624;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_module" target="nav_forge">
                     <mxGeometry x="0.2" y="12" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="nav_e3" value="module source (TF Registry)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#8C4FFF;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_repo1" target="nav_repo2">
-                    <mxGeometry x="0.5" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="nav_e4" value="Org context (CIDRs, SCPs)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#D6B656;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_lza" target="nav_generator">
-                    <mxGeometry x="0.3" y="-10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="nav_e5" value="Deployed infra" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#232F3E;dashed=1;dashPattern=8 4;labelBackgroundColor=#F5F5F5;fontSize=9;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="nav_aws" target="nav_generator">
-                    <mxGeometry x="0" y="10" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
+                <mxCell id="nav_flow" value="&lt;b&gt;Flow:&lt;/b&gt; Module patterns (left) feed the Generator KB → Generator produces new modules → Modules consumed by Deployment (right)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#444444;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="320" width="770" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
